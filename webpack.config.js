@@ -6,12 +6,13 @@ const BUILD_DIR = path.resolve(__dirname, 'build');
 const APP_DIR = path.resolve(__dirname ,'app');
 
 module.exports = {
-  entry:     `${APP_DIR}/index.jsx`,
+  entry:     `${APP_DIR}/entry.js`,
   output:    {
     path:       BUILD_DIR,
     filename:   'bundle.js',
     publicPath: '/'
   },
+  target: 'web',
   devtool:   'source-map',
   devServer: {
     inline:      true,
