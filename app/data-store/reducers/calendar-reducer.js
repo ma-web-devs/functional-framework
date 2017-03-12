@@ -1,8 +1,7 @@
 /**
  * Created by markgrover on 2/27/17.
  */
-import {dispatch} from '../../index'
-import {renderCalendar,populateGoogleDates, toggleCalendars,renderEventsOnNavigate} from '../../utils/calendar-utils'
+import {renderCalendar, toggleCalendars,renderEventsOnNavigate} from '../../utils/calendar-utils'
 /**
  * This Reducer is for the Calendar and any actions that stem from its views.
  *
@@ -15,15 +14,10 @@ export default (state = {}, action) => {
     switch (action.type) {
 
         case 'NAVIGATE':
-            if (state.router.route == 'index') {
-                setTimeout(renderCalendar,1,state.sources);
+            if (action.value === "index" && state.router.route !== "index") {
+                setTimeout(renderCalendar, 1, state.sources);
+                // TODO: look into how renderEventsOnNavigate works
                 setTimeout(renderEventsOnNavigate,1,state.sources);
-            } else {
-                const updatedSources = state.sources.map((source) => {
-                    source.added = false;
-                    return source;
-                });
-                return Object.assign({}, state, {sources:updatedSources});
             }
             return state;
 
@@ -35,7 +29,6 @@ export default (state = {}, action) => {
             const newSources = [].concat(sources.slice(0, idx), newRoom, sources.slice(idx+1));
 
             const newState = Object.assign({}, state, {sources:newSources});
-            console.log('newroom',newRoom);
             toggleCalendars(newState.sources[idx],newState.sources[idx].visible);
             return newState;
 
