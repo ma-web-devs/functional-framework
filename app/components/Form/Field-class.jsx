@@ -1,4 +1,4 @@
-import {dispatch} from '../../index';
+import { dispatch } from '../../index';
 import BaseField from './BaseField-class';
 import dom from '../../utils/dom'
 import R from 'ramda';
@@ -11,7 +11,7 @@ import R from 'ramda';
  * type    = gives type of value ie: type({id:10})  // "Object"
  * isEmpty = bool flag for object, string or array is empty
  */
-const {toUpper, toLower, isNil, is, type} = R;
+const { toUpper, toLower, isNil, is, type } = R;
 
 
 /**
@@ -36,14 +36,14 @@ class Field extends BaseField {
    */
   logFieldInfo(label) {
     if (this.debug) {
-      const {type, name, _value, isValid} = this;
+      const { type, name, _value, isValid } = this;
       console.log(`${label ? `[${label}] ` : ''}Field(${type}, ${name}) --> ${_value} --> ${isValid ? 'VALID' : 'INVALID'}`);
     }
   }
 
   logChangeInfo(prevValue, event) {
     if (this.debug) {
-      const {type, name, value} = this;
+      const { type, name, value } = this;
       console.log(`Field(${type}, ${name}) -> ${prevValue} << Changed >> ${value}`, event);
     }
   }
@@ -65,40 +65,59 @@ class Field extends BaseField {
    */
   jsx() {
 
-    const currentClass  = [this.className, !this.isValid ? this.errorClass : ''].join(' ');
+    const currentClass = [this.className, !this.isValid ? this.errorClass : ''].join(' ');
     const onChangeEvent = this.onchange.bind(this);
-    const wrapperClass  = ['control-group', !this.isValid ? 'error' : ''].join(' ');
+    const wrapperClass = ['control-group', !this.isValid ? 'error' : ''].join(' ');
+
+
+    //build option elements for select control
+    var optionElements = [];    
+    for (var i = 0; i < this.options.length; i++) {
+        optionElements.push(<option value={this.options[i]}>{this.options[i]}</option>);
+    } 
 
     // This only logs if this.debug == true
     this.logFieldInfo('rendering...');
 
+
+    let htmlControl = null;
+    
+    if (this.type == 'select') {
+      htmlControl =  <select name="cars">{optionElements}</select>
+    } else {
+      htmlControl = <input id={this.id}
+        type={this.type}
+        name={this.name}
+        value={this.value}
+        className={currentClass}
+        onchange={onChangeEvent} />;
+    }
+
+
     return (
       <div className={wrapperClass}>
-        <input id={this.id}
-               type={this.type}
-               name={this.name}
-               value={this.value}
-               className={currentClass}
-               onchange={onChangeEvent}/>
+        {htmlControl}
         {(!this.isValid ? <span class="help-inline error">{this.errorMsg}</span> : '')}
       </div>
     )
   }
+
+
 
   /**
    * If this.willDispatch is true then we'll dispatch an event from here
    * onchange. Otherwise it should be handled from a component somehow
    * and using this.fromState(value) the component can change input value.
    */
-  onchange({target: {value = null, checked=false}}) {
+  onchange({ target: { value = null, checked = false } }) {
     // Previous value for debug reasons only
-    const prevValue  = this._value;
+    const prevValue = this._value;
     this.value = this.format(toLower(this.type) === "checkbox" ? checked : value);
 
     this.logChangeInfo(prevValue, ...arguments);
 
     if (this.willDispatch) {
-      dispatch({type: toUpper(this.eventType), value: this._value});
+      dispatch({ type: toUpper(this.eventType), value: this._value });
     }
   }
 
@@ -106,10 +125,10 @@ class Field extends BaseField {
     let dispatchedEvent;
     if (this.isValid) {
       const eventType = eventTypeSuccess ? eventTypeSuccess : this.eventType;
-      dispatchedEvent = dispatch({type: eventType, value: this.format(this._value)});
+      dispatchedEvent = dispatch({ type: eventType, value: this.format(this._value) });
     }
     else {
-      dispatchedEvent = dispatch({type: eventTypeFailure, value: this.format(this._value)});
+      dispatchedEvent = dispatch({ type: eventTypeFailure, value: this.format(this._value) });
     }
     // Returns the value of input.. or the optional returnValue
     return isNil(returnValue) ? dispatchedEvent : false;

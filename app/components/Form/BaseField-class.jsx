@@ -14,7 +14,7 @@ export default class BaseField {
 
   static get TYPES() {
     return [
-      'number', 'text', 'checkbox', 'radio'
+      'number', 'text', 'checkbox', 'radio', 'select'
     ];
   }
 
@@ -23,7 +23,8 @@ export default class BaseField {
       number:   0,
       text:     '',
       checkbox: '',
-      radio:    ''
+      radio:    '',
+      select: ''
     };
   }
 
@@ -77,6 +78,7 @@ export default class BaseField {
     this.type         = BaseField.TYPES.includes(toLowerType) ? inputType : Field.error('type', inputType);
     this.validation   = isCallable(validation) ? validation : Field.error('validation', validation);
     this.defaultValue = defaultValue || BaseField.DEFAULTS[toLowerType];
+    this.options      = [];
 
     this.debug = debug ? !!debug : false;
   }
