@@ -1,7 +1,11 @@
 /**
  * Created by markgrover on 2/27/17.
  */
-import {renderCalendar, toggleCalendars,renderEventsOnNavigate} from '../../utils/calendar-utils'
+import {renderInitialCalendar, mapSourcesToCalendar, toggleCalendars} from '../../utils/calendar-utils';
+import R, {propOr, map, set, lensProp} from 'ramda';
+
+
+
 /**
  * This Reducer is for the Calendar and any actions that stem from its views.
  *
@@ -11,46 +15,63 @@ import {renderCalendar, toggleCalendars,renderEventsOnNavigate} from '../../util
  */
 export default (state = {}, action) => {
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case 'NAVIGATE':
-            if (action.value === "index" && state.router.route !== "index") {
-                setTimeout(renderCalendar, 1, state.sources);
-                // TODO: look into how renderEventsOnNavigate works
-                setTimeout(renderEventsOnNavigate,1,state.sources);
-            }
-            return state;
+    case 'INITIAL':
+    case 'NAVIGATE':
+      if (action.value === "index" || state.router.route === "index") {
+        setTimeout(() => {
+            // Render the calendar
+            renderInitialCalendar();
+            // render the visible sources
+            mapSourcesToCalendar(propOr([], 'sources', state));
+          }, 0);
+      }
+      return state;
 
-        case 'TOGGLEROOM':
-            const {value: {visible, room, added}} = action;
-            const {sources} = state;
-            const idx = room - 1;
-            const newRoom = Object.assign({}, sources[idx], {visible: !visible, added: !added});
-            const newSources = [].concat(sources.slice(0, idx), newRoom, sources.slice(idx+1));
+    case 'SET_SOURCES':
+      // Remove all sources on calendar
+      $('#calendar').fullCalendar('removeEventSources');
+      // Set new sources on calendar
+      mapSourcesToCalendar(propOr([], 'value', action))
+      // Update state.sources
+      return Object.assign({}, state, {sources: action.value});
 
-            const newState = Object.assign({}, state, {sources:newSources});
-            toggleCalendars(newState.sources[idx],newState.sources[idx].visible);
-            return newState;
+    case 'TOGGLE_ROOM':
 
-        case 'SOURCETOGGLED':
-            const mySources = state.sources;
-            const idX = action.value;
-            const isAdded = !mySources[idX].added;
-            const activeRoom = Object.assign({}, state,{added: isAdded});
-            console.log('activeRoom',activeRoom);
-            const newSourceArr = [].concat(mySources.slice(0, idX - 1),activeRoom, mySources.slice(idX));
-            return Object.assign({}, state, {sources:newSourceArr});
+      const sources = map(source => {
+        if (source === action.value) {
+          return set(lensProp('visible'), !source.visible, source);
+        }
+        return source;
+      }, state.sources);
 
-        case 'TOGGLEROOMS':
-            //jQuery('#toggle-all').prop('checked','false');
-            return Object.assign({},state,{showAllToggles: action.value});
+      // Remove all sources on calendar
+      $('#calendar').fullCalendar('removeEventSources');
+      // Set new sources on calendar
+      mapSourcesToCalendar(sources);
+      return Object.assign({}, state, {sources});
 
-        case 'TOGGLEDRAWER':
 
-            return Object.assign({}, state, {calendarDrawer: action.value});
+    case 'SOURCETOGGLED':
+      const mySources  = state.sources;
+      const idX        = action.value;
+      const isAdded    = !mySources[idX].added;
+      const activeRoom = Object.assign({}, state, {added: isAdded});
+      console.log('activeRoom', activeRoom);
+      const newSourceArr = [].concat(mySources.slice(0, idX - 1), activeRoom, mySources.slice(idX));
+      return Object.assign({}, state, {sources: newSourceArr});
 
-        default:
-            // @desc Always have a default to return state object
-            return state
-    }
+    case 'TOGGLEROOMS':
+      //jQuery('#toggle-all').prop('checked','false');
+      return Object.assign({}, state, {showAllToggles: action.value});
+
+    case 'TOGGLEDRAWER':
+
+      return Object.assign({}, state, {calendarDrawer: action.value});
+
+    default:
+      // @desc Always have a default to return state object
+      return state
+  }
 }
