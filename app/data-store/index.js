@@ -45,6 +45,7 @@ export function createStore(reducer, state) {
     isDispatching = true
 
     try {
+      action.value = action.value;
       logAction(action.type)(action)
       logCurrentState(currentState)
       // 1. Get the new state.

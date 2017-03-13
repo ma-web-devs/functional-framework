@@ -1,46 +1,104 @@
 "use strict"
 import dom from '../../utils/dom'
-import {log} from '../../utils/logger'
-import {dispatch} from '../../index'
-import {displayCalendarFilter} from '../../utils/calendar-utils'
+import {
+  displayCalendarFilter,
+  setAllCalendarSwitches
+} from '../../utils/calendar-utils'
+import {
+  curry,
+  map,
+  propOr,
+  propEq,
+  any
+} from 'ramda'
+
+
+// Succeeds if any have {}.visible == false.
+// someAreHidden :: Array<Object> -> Bool
+const someAreHidden = any(propEq('visible', false))
+
 
 /**
- * Calendar Component
+ * Create the checkbox toggle switch (it's all CSS, no jQuery)
+ *
+ * ToggleCheckboxJSX :: Source -> VNode
+ *
+ * @param dispatch
+ * @param source
+ * @returns {VNode}
+ */
+const ToggleCheckboxJSX = curry(
+  (dispatch, source) => {
+
+    const offClassName = `btn btn-sm btn-${!source.visible ? 'danger active' : 'default'}`
+    const onClassName = `btn btn-sm btn-${source.visible ? 'success active' : 'default'}`
+
+    return (
+      <span>
+          <div className="btn-group" tabindex="0"
+               onclick={() => dispatch({type: 'TOGGLE_ROOM', value: source})}>
+            <a className={offClassName}>
+              <span className="glyphicon glyphicon-remove"></span>
+            </a>
+            <a className={onClassName}>
+              <span className="glyphicon glyphicon-thumbs-up"></span>
+            </a>
+          </div>
+          <strong className="checkboxText">{propOr('', 'title', source)}</strong>
+      </span>
+    )
+  })
+
+
+
+/**
+ * Show all sources button (to toggle all checkboxes to true)
+ *
+ * showAllSourcesButton :: (Func, Bool) -> VNode
+ *
+ * @param dispatch
+ * @param showButton
+ * @returns {*}
+ * @constructor
+ */
+const ShowAllSourcesButton = (dispatch, showButton = false) => {
+
+  return showButton ? (
+      <span onclick={() => dispatch({type: 'SHOW_ALL_SOURCES'})}
+            className="btn btn-sm btn-info">
+        Show All Events
+      </span>
+    ) : null
+}
+
+
+
+/**
+ * Calendar Toggle Switches Component
  * @param  {array} calendarEvents - The events for calendar to display
  * @return {VNode}
  */
-export default ({state, dispatch}) => {
+export default ({state: {sources = []}, dispatch}) => {
 
-	return (
-		<section>
-			<div className="toggle-form-container">
-				<div className="form-inline">
-					<div className="toggle-wrapper">
+  const displayShowAll = someAreHidden(sources)
 
-							<span><input id="input-1" type="checkbox" checked={state[0].visible} onchange={toggleRoom(state[0])}/><span className="checkboxText">The Library</span></span>
+  return (
+    <section id="toggleCalendars">
+      <div className="toggle-form-container">
+        <div className="form form-inline">
+          <div className="toggle-wrapper">
 
-							<span><input id="input-2" type="checkbox" checked={state[1].visible} onchange={toggleRoom(state[1])}/><span className="checkboxText">Cesar Chavez</span></span>
+            <div className="form-group-sm">
+              {/* Render Checkboxes for Toggle Switches */}
+              {map(ToggleCheckboxJSX(dispatch), sources)}
 
-							<span><input id="input-3" type="checkbox" checked={state[2].visible} onchange={toggleRoom(state[2])}/><span className="checkboxText">Rosa Parks</span></span>
+              {/* Render the "show all" sources button */}
+              {ShowAllSourcesButton(dispatch, displayShowAll)}
+            </div>
 
-							<span><input id="input-4" type="checkbox" checked={state[3].visible} onchange={toggleRoom(state[3])}/><span className="checkboxText">Nelson Mandela</span></span>
-
-					</div>
-				</div>
-			</div>
-
-		</section>
-	)
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
-
-
-function toggleRoom(room) {
-	return () => {
-			dispatch({type: 'TOGGLEROOM', value: room})
-		}
-}
-jQuery(document).ready(function($) {
-	displayCalendarFilter();
-});
-
-

@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,36 +16,23 @@
   <script src="bower_components/moment/moment.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
-  <script src="bower_components/fullcalendar/dist/gcal.js"></script>
-  <script src="bower_components/fullcalendar/dist/gcal.js"></script>
 
 
-  <script id="googlePromiseScript">
-    window.googleEvents = new Promise(function (resolve, reject) {
-      const s = document.createElement('script');
-      s.src = "https://apis.google.com/js/api.js"
-      s.onreadystatechange = "if (this.readyState === 'complete') this.onload()"
-      s.onload = function handleClientLoad(args) {
-        return resolve(args);
-      }
-      document.head.insertBefore(s, document.querySelector('head title'));
-    });
-  </script>
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
-    const CLIENT_ID = '895512080708-nsu25s3qth29utoqtkb51hps5aoq0c75.apps.googleusercontent.com'
-    const API_KEY = 'AIzaSyBF391zC2S8su_r_-zFARAoWo1ekRsgcZE'
+    const CLIENT_ID  = '895512080708-nsu25s3qth29utoqtkb51hps5aoq0c75.apps.googleusercontent.com'
+    const API_KEY    = 'AIzaSyBF391zC2S8su_r_-zFARAoWo1ekRsgcZE'
     var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
     var calId = 't0gnqindnl5hfu7noj4iu3dvek@group.calendar.google.com'
-    window.gapiPromise = new Promise(function (resolve, reject) {
+    window.gapiPromise = new Promise(function(resolve, reject) {
       function start() {
         // 2. Initialize the JavaScript client library.
         gapi.client.init({
-          'apiKey': 'AIzaSyBF391zC2S8su_r_-zFARAoWo1ekRsgcZE',
+          'apiKey': API_KEY,
           'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
           // clientId and scope are optional if auth is not required.
-          'clientId': '895512080708-nsu25s3qth29utoqtkb51hps5aoq0c75',
+          'clientId': CLIENT_ID,
           'scope': SCOPES
         })
           .then(resolve, reject);
@@ -57,9 +43,6 @@
       gapi.load('client', start);
     })
   </script>
-
-  <script src="bower_components/bootstrap-checkbox/dist/js/bootstrap-checkbox.min.js"></script>
-
 
   <script>
     window._CONFIG = window._CONFIG || {}
@@ -72,21 +55,12 @@
     }
   </script>
 
-  <script>
-    $(document).ready(function () {
-      $('.dropdown-toggle').dropdown();
-    });
-
-  </script>
-
 </head>
-
 <body>
 
-  <section id="app"></section>
+<section id="app"></section>
 
-  <script src="bundle.js"></script>
+<script src="bundle.js"></script>
 
 </body>
-
 </html>
