@@ -1,6 +1,5 @@
 "use strict"
 import dom from '../../utils/dom'
-import {log} from '../../utils/logger'
 import CalendarDrawer from 'CalendarDrawer'
 
 /**
@@ -8,11 +7,15 @@ import CalendarDrawer from 'CalendarDrawer'
  * @param  {array} calendarEvents - The events for calendar to display
  * @return {VNode}
  */
-export default ({state}) => {
+export default ({state, dispatch}) => {
   return (
     <section>
-      <CalendarDrawer state={state}></CalendarDrawer>
-      <div id="calendar"/>
+      <div className="calendar-controls">
+        <CalendarDrawer state={state} dispatch={dispatch}/>
+      </div>
+      <div className="calendar-plugin">
+        <div id="calendar"/>
+      </div>
     </section>
   );
 }

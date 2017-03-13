@@ -1,12 +1,13 @@
 import gcal from './gcal'
-import {log} from './logger'
-import R from 'ramda';
 import {dispatch} from '../index';
 
-const {view, set, lensPath, lensProp, filter, map, tap, pickAll, curry, evolve, prop, propOr, propEq, compose} = R;
+import {
+  propEq, compose, once, tap,
+  pickAll, curry, evolve, prop, propOr,
+  view, set, lensPath, lensProp, filter, map
+} from 'ramda';
 
 
-const eventsToCalendar = (events) => $('#calendar').fullCalendar('addEventSource', events);
 
 const colors = {
   'bdnha1319u329g6gsr6rcksg6c@group.calendar.google.com': {color: '#aeeea9', textColor: '#fef'},
@@ -42,10 +43,12 @@ const sourceToEvent =
         );
 
 const fromSources         = compose(map(sourceToEvent), viewItems);
-const addSourceToCalendar = compose(tap(eventsToCalendar), fromSources);
 
-const parseOriginalGoogleResp = R.once(function (sources) {
+// This will always return the same sources, it can only run once
+// parseOriginalGoogleResp :: RawSources -> Array<Source>
+const parseOriginalGoogleResp = once(function (sources) {
 
+  let sourceKey = 0;
   const events = map((source) => {
     const events     = viewItems(source);
     const calendarId = eventCalId(events[0]);
@@ -55,27 +58,25 @@ const parseOriginalGoogleResp = R.once(function (sources) {
         visible: true,
         title: propOr('', 'summary', source),
         description: propOr('', 'description', source),
-        id: propOr('', 'id', source)
+        id: propOr('', 'id', source),
+        key: sourceKey++
       },
-      R.propOr({}, calendarId, colors)
+      propOr({}, calendarId, colors)
     );
 
   }, sources);
 
-  console.log(sources);
-  dispatch({type: 'SET_SOURCES', value: events});
-
+  return events;
 });
 
 
-gcal.getSources()
-  .then(R.tap(renderInitialCalendar))
-  .then(parseOriginalGoogleResp);
-
-export const mapSourcesToCalendar = compose(
+// mapSourcesToCalendar :: Array<Source> -> Side Effect
+export const mapVisibleSourcesToFullCalendar = compose(
   map(source => $('#calendar').fullCalendar('addEventSource', source)),
   filter(propEq('visible', true))
 );
+
+export const setMasterSources = tap(sources => dispatch({type: 'SET_SOURCES', value: sources}));
 
 export function renderInitialCalendar() {
   $('#calendar').fullCalendar({
@@ -88,105 +89,19 @@ export function renderInitialCalendar() {
 }
 
 
-// TODO: See what the code below does
-
 /**
+ * When the app first loads we render calendar. The method gcal.getSources
+ * returns a Promise that resolves all the Google Calendars.
  *
- * @param sources     - raw calendars from google calendar
- * @param timeout     - time between re-running if calendar was not on page
- * @param maxTimeout  - max timeout to not try calling renderCalendar again
- * @returns {number}
+ * Raw Sources come in -> parse to FullCalendar Sources
+ * (this only needs to run once...)
  */
-export const renderCalendar = function (timeout = 1, maxTimeout = 3000) {
-  console.log("renderCalendar Still Being Called....")
-};
-
-
-/*
- *  check if resource is already added to calendar
- *
- *  newSource is the object up for comparison
- *
- *  returns (BOOL)
- *
- *  true is in currentSource Array
- *  false if Not
- * */
-function isSource(newSource) {
-  let sources   = $('#calendar').fullCalendar('getEventSources');
-  let calExists = false;
-
-  if (sources.length > 0) {
-
-    sources.forEach((source) => {
-      if (newSource.calendarId === source.calendarId) {
-        calExists = true;
-      }
-    });
-
-    return calExists;
-  }
-  return calExists;
-}
-
-
-/*
- *  add new event source
- *
- *  source is single source object from source array
- *
- *
- * */
-function removeEventSource(source) {
-  if (!source.added) {
-    let calId = {googleCalendarId: source.calendarId};
-    $('#calendar').fullCalendar('removeEventSource', calId);
-  }
-}
-
-// remove event source
-function addEventSource(source) {
-  if (source.added) {
-    let calId = {
-      googleCalendarId: source.calendarId,
-      color:            source.color,
-      textColor:        source.textColor
-    };
-    $('#calendar').fullCalendar('addEventSource', calId);
-  }
-}
-
-// toggleCalendars
-export function toggleCalendars(source, visible) {
-  if (!visible) {
-    removeEventSource(source);
-  } else {
-    addEventSource(source);
-  }
-}
-export const populateGoogleDates    = function (sources) {
-  sources.forEach((source) => {
-    if (((!isSource(source)) && (source.visible === true) && (source.added === false))) {
-      let calId = {
-        googleCalendarId: source.calendarId,
-        color:            source.color,
-        textColor:        source.textColor
-      };
-      $('#calendar').fullCalendar('addEventSource', calId);
-      source.added = true;
-    }
-  });
-
-};
-
-// Toggle Button Display
-export const displayCalendarFilter = function () {
-  $('#toggleCalendars input[type=checkbox]').checkboxpicker({
-    html:     true,
-    offLabel: '<span class="glyphicon glyphicon-remove">',
-    onLabel:  '<span class="glyphicon glyphicon-ok">',
-    baseCls:  'btn btn-xs'
-  });
-};
-
-export default {renderCalendar, populateGoogleDates, toggleCalendars}
+gcal.getSources(renderInitialCalendar)
+  .then(tap(sources => {
+    /* Raw sources (from Google Calendar API) */
+  }))
+  .then(parseOriginalGoogleResp)
+  .then(setMasterSources)
+  .then(tap(sources => {
+    /* Parsed sources (as given to the calendar) */
+  }))

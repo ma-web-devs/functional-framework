@@ -1,78 +1,104 @@
 "use strict"
-import dom from '../../utils/dom';
-import {dispatch} from '../../index';
-import {displayCalendarFilter} from '../../utils/calendar-utils';
-import {map, propOr} from 'ramda';
+import dom from '../../utils/dom'
+import {
+  displayCalendarFilter,
+  setAllCalendarSwitches
+} from '../../utils/calendar-utils'
+import {
+  curry,
+  map,
+  propOr,
+  propEq,
+  any
+} from 'ramda'
 
-const ToggleCheckbox = (source) => {
-  return (
-    <span>
-      <input class="toggle-checkbox"
-             type="checkbox"
-             checked={source.visible}
-             onchange={() => dispatch({type: 'TOGGLE_ROOM', value: source})} />
-      <span className="checkboxText">{propOr('', 'title', source)}</span>
-    </span>
-  );
-};
+
+// Succeeds if any have {}.visible == false.
+// someAreHidden :: Array<Object> -> Bool
+const someAreHidden = any(propEq('visible', false))
 
 
 /**
- * Calendar Component
+ * Create the checkbox toggle switch (it's all CSS, no jQuery)
+ *
+ * ToggleCheckboxJSX :: Source -> VNode
+ *
+ * @param dispatch
+ * @param source
+ * @returns {VNode}
+ */
+const ToggleCheckboxJSX = curry(
+  (dispatch, source) => {
+
+    const offClassName = `btn btn-sm btn-${!source.visible ? 'danger active' : 'default'}`
+    const onClassName = `btn btn-sm btn-${source.visible ? 'success active' : 'default'}`
+
+    return (
+      <span>
+          <div className="btn-group" tabindex="0"
+               onclick={() => dispatch({type: 'TOGGLE_ROOM', value: source})}>
+            <a className={offClassName}>
+              <span className="glyphicon glyphicon-remove"></span>
+            </a>
+            <a className={onClassName}>
+              <span className="glyphicon glyphicon-thumbs-up"></span>
+            </a>
+          </div>
+          <strong className="checkboxText">{propOr('', 'title', source)}</strong>
+      </span>
+    )
+  })
+
+
+
+/**
+ * Show all sources button (to toggle all checkboxes to true)
+ *
+ * showAllSourcesButton :: (Func, Bool) -> VNode
+ *
+ * @param dispatch
+ * @param showButton
+ * @returns {*}
+ * @constructor
+ */
+const ShowAllSourcesButton = (dispatch, showButton = false) => {
+
+  return showButton ? (
+      <span onclick={() => dispatch({type: 'SHOW_ALL_SOURCES'})}
+            className="btn btn-sm btn-info">
+        Show All Events
+      </span>
+    ) : null
+}
+
+
+
+/**
+ * Calendar Toggle Switches Component
  * @param  {array} calendarEvents - The events for calendar to display
  * @return {VNode}
  */
-export default ({state}) => {
+export default ({state: {sources = []}, dispatch}) => {
 
-  const sources = propOr([], 'sources', state);
+  const displayShowAll = someAreHidden(sources)
 
   return (
     <section id="toggleCalendars">
       <div className="toggle-form-container">
-        <div className="form-inline">
-          <div className="toggle-wrapper" onclick={() => {
-            let boxes          = jQuery("[id*='input-']");
-            const checkedBoxes = boxes.filter((box) => {
-              console.log(boxes[box].checked);
-              return !boxes[box].checked;
-            });
-            if (checkedBoxes.length > 0) {
-              return dispatch({type: 'TOGGLEROOMS', value: 'show'});
-            } else {
-              return dispatch({type: 'TOGGLEROOMS', value: 'hide'});
-            }
-          }}>
+        <div className="form form-inline">
+          <div className="toggle-wrapper">
 
+            <div className="form-group-sm">
+              {/* Render Checkboxes for Toggle Switches */}
+              {map(ToggleCheckboxJSX(dispatch), sources)}
 
-            {map(ToggleCheckbox, sources)}
+              {/* Render the "show all" sources button */}
+              {ShowAllSourcesButton(dispatch, displayShowAll)}
+            </div>
 
-
-            <span className={state.showAllToggles}><input id="toggle-all" type="checkbox" onchange={(e) => {
-              if (e.target.checked) {
-                console.log('target', e.target);
-                jQuery('#toggle-all').prop('checked', false);
-                return (
-                  state.sources.forEach((room) => {
-                    if (!room.visible) {
-                      jQuery('#input-' + room.room).prop('checked', true);
-                    }
-
-                    dispatch({type: 'TOGGLEROOMS', value: 'hide'});
-                  })
-                )
-              }
-            }
-            }/><span className="checkboxText">Show All</span></span>
           </div>
         </div>
       </div>
     </section>
   )
 }
-
-
-jQuery(document).ready(function ($) {
-  displayCalendarFilter();
-});
-
-

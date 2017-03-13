@@ -26,7 +26,17 @@ function getEventsFromGoogle(calendarId) {
 const ourAPI = {
   calendars: null,
 
-  getSources() {
+  /**
+   * Return the Promise of Google Calendar Sources.
+   * Optionally run a function first
+   *
+   * @param {Function} [precursorFn] - a function to run before returning sources
+   * @returns {Promise}
+   */
+  getSources(precursorFn) {
+    if (precursorFn && typeof precursorFn === "function") {
+      precursorFn();
+    }
     return new Promise((resolve, reject) => !this.calendars ? reject(null) : resolve(this.calendars))
   },
 

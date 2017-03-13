@@ -1,10 +1,7 @@
 "use strict"
 import dom from '../../utils/dom'
-import {log} from '../../utils/logger'
 import CalendarInnerDrawer from 'CalendarInnerDrawer'
-import {dispatch} from '../../index'
-import {displayCalendarFilter} from '../../utils/calendar-utils'
-
+import {propOr, gt} from 'ramda';
 
 
 /**
@@ -12,35 +9,28 @@ import {displayCalendarFilter} from '../../utils/calendar-utils'
  * @param  {array} calendarEvents - The events for calendar to display
  * @return {VNode}
  */
-export default ({state}) => {
+export default ({state, dispatch}) => {
 
-	return (
-		<div>
-			<p className="glyph-container">
-				<small className="settings" ariaExpanded="false" ariaControls="collapseExample" onclick={() => {
-					if(state.calendarDrawer === 'collapse'){
-						return (
-						dispatch({type: 'TOGGLEDRAWER', value: ''}),
-						displayCalendarFilter(),
+  const sourcesLoaded = gt(propOr(0, 'length', state.sources), 0)
+  const buttonText = state.openCalendarDrawer ? 'Hide Calendar Filters' : 'Show Calendar Filters';
 
-							jQuery('.glyphicon-chevron-down').toggleClass('hide'),
-							jQuery('.glyphicon-chevron-up').toggleClass('hide')
+  return sourcesLoaded ? (
+      <div>
+        {/* The Button to Open/Close the Toggle Switch Drawer */}
 
-						)
-					} else {
-						return (
-							dispatch({type: 'TOGGLEDRAWER', value: 'collapse'}),
-							jQuery('.glyphicon-chevron-down').toggleClass(state.showAllToggles),
-							jQuery('.glyphicon-chevron-up').toggleClass(state.showAllToggles)
-						)
-					}
+        <div className="form form-inline">
+            <span onclick={() => dispatch({type: 'TOGGLE_DRAWER'})}
+                  className="btn btn-sm settings"
+                  ariaExpanded="false"
+                  ariaControls="calendarToggleControls">
+              <i className="glyphicon glyphicon-cog"> </i> {buttonText}
+            </span>
+        </div>
+        <br/>
 
-				}}>
+        {/* The Filters (checkboxes) To Toggle Sources On Calendar */}
+        <CalendarInnerDrawer state={state} dispatch={dispatch}/>
 
-					<span className="glyphicon glyphicon-cog"></span> Settings</small>
-			</p>
-			<CalendarInnerDrawer state={state} />
-
-		</div>
-	);
+      </div>
+    ) : null;
 }

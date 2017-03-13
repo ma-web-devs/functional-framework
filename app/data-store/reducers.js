@@ -13,8 +13,7 @@ export const defaultState = {
   router:         getInitialRouter(window.location),
   auth:           null,
   sources:        [],
-  showAllToggles: 'hide',
-  calendarDrawer: 'collapse'
+  openCalendarDrawer: false
 };
 
 /**
