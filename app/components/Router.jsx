@@ -1,3 +1,4 @@
+"use strict";
 import dom from '../utils/dom'
 import {dispatch} from '../index'
 
@@ -21,7 +22,7 @@ import {dispatch} from '../index'
  * @returns {VNode}
  * @constructor
  */
-export const Link = ({state = {}, dispatch, route = ''}, innerContent = ['']) => {
+export const Link = ({state = {}, dispatch, route = ''}, innerContent) => {
   const currentRoute = state.router ? state.router.route : ''
   const active       = route === currentRoute
 
@@ -32,6 +33,7 @@ export const Link = ({state = {}, dispatch, route = ''}, innerContent = ['']) =>
     </a>
   )
 }
+
 
 /**
  * @member Route
@@ -47,7 +49,7 @@ export const Link = ({state = {}, dispatch, route = ''}, innerContent = ['']) =>
  *
  *           return (
  *             <div>
- *               <Route state={state} dispatch={dispatch} component={YourComponent}/>
+ *               <Route state={state} dispatch={dispatch} Component={YourComponent}/>
  *             </div>
  *           )
  *         }
@@ -61,15 +63,15 @@ export const Link = ({state = {}, dispatch, route = ''}, innerContent = ['']) =>
  * @returns {*}
  * @constructor
  */
-export const Route = ({state = {}, dispatch, route = '', component} = {}, innerContent) => {
+export const Route = ({state = {}, dispatch, route = '', Component} = {}, innerContent) => {
 
   const currentRoute = state.router ? state.router.route : ''
 
-  return (currentRoute === route) ? (
+  return (currentRoute !== route) ? null : (
       <article dataset={{route}}>
-        {component({state, dispatch}, innerContent)}
+        <Component state={state} dispatch={dispatch}>{innerContent}</Component>
       </article>
-    ) : null
+    )
 }
 
 

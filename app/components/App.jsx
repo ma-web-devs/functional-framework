@@ -33,11 +33,11 @@ const AppComponent = ({state, dispatch}) => {
 
       <section className="row">
         {/*  Calendar route="calendar" */}
-        <Route route="index" state={state} dispatch={dispatch} component={Calendar}/>
+        <Route route="index" state={state} dispatch={dispatch} Component={Calendar}/>
         {/* Example route="example" */}
-        <Route route="example" state={state} dispatch={dispatch} component={Example}/>
+        <Route route="example" state={state} dispatch={dispatch} Component={Example}/>
         {/*  Admin route="" */}
-        <Route route="admin" state={state} dispatch={dispatch} component={Room}/>
+        <Route route="admin" state={state} dispatch={dispatch} Component={Room}/>
       </section>
 
       {/* Footer */}
