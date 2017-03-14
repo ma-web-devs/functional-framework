@@ -1,177 +1,107 @@
+import gcal from './gcal'
+import {dispatch} from '../index';
+
+import {
+  propEq, compose, once, tap,
+  pickAll, curry, evolve, prop, propOr,
+  view, set, lensPath, lensProp, filter, map
+} from 'ramda';
+
+
+
+const colors = {
+  'bdnha1319u329g6gsr6rcksg6c@group.calendar.google.com': {color: '#aeeea9', textColor: '#fef'},
+  'led1grg2f8jtbtdrks7hv125fo@group.calendar.google.com': {color: '#ff91a0', textColor: '#fef'},
+  '353tn8hvjnrtja3h21gbjgaigo@group.calendar.google.com': {color: '#acb3e8', textColor: '#fef'},
+  't0gnqindnl5hfu7noj4iu3dvek@group.calendar.google.com': {color: '#ff9788', textColor: '#fef'}
+};
+
+
+const pickEventProps = pickAll(
+  ['start', 'end', 'title', 'description', 'summary', 'iCalUID', 'htmlLink', 'created', 'organizer', 'id']);
+
+// Create setter to map _
+const setFromMap = curry((_keyA, _keyB, _map, obj) => set(lensProp(_keyA), prop(_keyB, _map), obj));
+
+const viewItems              = view(lensProp('items'));
+const viewDateTime           = view(lensProp('dateTime'));
+const eventCalId             = view(lensPath(['organizer', 'email']));
+const setStartEndTimes       = evolve({start: viewDateTime, end: viewDateTime});
+const setColorFromCalendarId = obj => setFromMap('color', eventCalId(obj), colors)(obj);
+const setTitleFromSummary    = obj => setFromMap('title', 'summary', obj)(obj);
+
 /**
- * Created by markgrover on 2/27/17.
+ * Get events, there are some properties on the raw source events that
+ * must be changed before added to the calendar. This function will
+ * map over all items and get the needed values.
  */
-/*
- * This function runs a while loop to check for the calendar element to be available
+const sourceToEvent =
+        compose(
+          setTitleFromSummary,
+          setStartEndTimes,
+          pickEventProps
+        );
+
+const fromSources         = compose(map(sourceToEvent), viewItems);
+
+// This will always return the same sources, it can only run once
+// parseOriginalGoogleResp :: RawSources -> Array<Source>
+const parseOriginalGoogleResp = once(function (sources) {
+
+  let sourceKey = 0;
+  const events = map((source) => {
+    const events     = viewItems(source);
+    const calendarId = eventCalId(events[0]);
+
+    return Object.assign({
+        events: fromSources(source),
+        visible: true,
+        title: propOr('', 'summary', source),
+        description: propOr('', 'description', source),
+        id: propOr('', 'id', source),
+        key: sourceKey++
+      },
+      propOr({}, calendarId, colors)
+    );
+
+  }, sources);
+
+  return events;
+});
+
+
+// mapSourcesToCalendar :: Array<Source> -> Side Effect
+export const mapVisibleSourcesToFullCalendar = compose(
+  map(source => $('#calendar').fullCalendar('addEventSource', source)),
+  filter(propEq('visible', true))
+);
+
+export const setMasterSources = tap(sources => dispatch({type: 'SET_SOURCES', value: sources}));
+
+export function renderInitialCalendar() {
+  $('#calendar').fullCalendar({
+    header: {
+      right:  'month,agendaWeek',
+      left:   'prev,next',
+      center: 'title'
+    }
+  });
+}
+
+
+/**
+ * When the app first loads we render calendar. The method gcal.getSources
+ * returns a Promise that resolves all the Google Calendars.
  *
- * once the Jquery call returns an array with a length grater then 0
- * we can run our render function salfely and set our flag to true.
- *
- *  sources = [{source},{source}...]
- *
- * */
-
-export const renderCalendar = function(sources = null,timeout = 1, maxTimeout = 3000) {
-
-    if (timeout > maxTimeout) {
-        return;
-    }
-    const $calendar = $('#calendar');
-    if (!$calendar.length){
-        timeout++;
-        return setTimeout(renderCalendar(timeout), timeout);
-    }
-
-    $('#calendar').fullCalendar({
-        //customButtons: {
-        //    myCustomButton: {
-        //        text: 'custom!'
-        //    }
-        //},
-        header: {
-            right: 'month,agendaWeek' ,
-            left: 'prev,next',
-            center: 'title'
-        }, // buttons for switching between views
-        googleCalendarApiKey: 'AIzaSyBF391zC2S8su_r_-zFARAoWo1ekRsgcZE',
-        dayClick: function () {
-            log('a day has been clicked!');
-        }
-    });
-
-    populateGoogleDates(sources);
-};
-/*
-*  check if resource is already added to calendar
-*
-*  newSource is the object up for comparison
-*
-*  returns (BOOL)
-*
-*  true is in currentSource Array
-*  false if Not
-* */
-function isSource(newSource) {
-    let sources = $('#calendar').fullCalendar('getEventSources');
-    let calExists = false;
-
-    if (sources.length > 0) {
-
-        sources.forEach((source) => {
-            if(newSource.calendarId === source.calendarId){
-                calExists = true;
-            }
-        });
-
-        return calExists;
-    }
-    return calExists;
-}
-/*
-*  add new event source
-*
-*  source is single source object from source array
-*
-*
-* */
-function removeEventSource(source){
-    if(!source.added){
-        let calId = {googleCalendarId: source.calendarId};
-        $('#calendar').fullCalendar('removeEventSource', calId);
-        //source.added = false;
-        toggleAddedProperty(source.room -1);
-   }
-
-}
-
-// remove event source
-function addEventSource(source){
-    if(source.added){
-        let calId = {
-            googleCalendarId: source.calendarId,
-            color: source.color,
-            textColor: source.textColor
-        };
-        $('#calendar').fullCalendar('addEventSource', calId);
-        //source.added = true; replaced with call to function to tie
-        // property change into the state.
-        toggleAddedProperty(source.room -1);
-
-    }
-
-}
-
-// toggle added Property
-function toggleAddedProperty(id){
-    return (id) => {
-        dispatch({type: 'SOURCETOGGLED', value: id})
-    }
-}
-
-// toggleCalendars
-export function toggleCalendars(source,visible){
-    if(!visible){
-        removeEventSource(source);
-    } else {
-        addEventSource(source);
-    }
-}
-export const populateGoogleDates = function(sources){
-    sources.forEach((source) => {
-        if(((!isSource(source)) && (source.visible === true) && (source.added === false))){
-        let calId = {
-            googleCalendarId: source.calendarId,
-            color: source.color,
-            textColor: source.textColor
-        };
-        $('#calendar').fullCalendar('addEventSource', calId);
-        source.added = true;
-        }
-    });
-
-};
-// Render Events On Navigation
-export const renderEventsOnNavigate = function(sources){
-    sources.forEach((source) => {
-        if(source.added === false && source.visible === true){
-            let calId = {
-                googleCalendarId: source.calendarId,
-                color: source.color,
-                textColor: source.textColor
-            };
-            $('#calendar').fullCalendar('addEventSource', calId);
-
-        }
-
-    });
-    displayCalendarFilter();
-};
-
-// Toggle Button Display
-export const displayCalendarFilter = function (){
-    $('#input-1').checkboxpicker({
-        html: true,
-        offLabel: '<span class="glyphicon glyphicon-remove">',
-        onLabel: '<span class="glyphicon glyphicon-ok">',
-        baseCls: 'btn btn-xs'
-    });
-    $('#input-2').checkboxpicker({
-        html: true,
-        offLabel: '<span class="glyphicon glyphicon-remove">',
-        onLabel: '<span class="glyphicon glyphicon-ok">',
-        baseCls: 'btn btn-xs'
-    });
-    $('#input-3').checkboxpicker({
-        html: true,
-        offLabel: '<span class="glyphicon glyphicon-remove">',
-        onLabel: '<span class="glyphicon glyphicon-ok">',
-        baseCls: 'btn btn-xs'
-    });
-    $('#input-4').checkboxpicker({
-        html: true,
-        offLabel: '<span class="glyphicon glyphicon-remove">',
-        onLabel: '<span class="glyphicon glyphicon-ok">',
-        baseCls: 'btn btn-xs'
-    });
-};
-export default { renderCalendar , populateGoogleDates, toggleCalendars}
+ * Raw Sources come in -> parse to FullCalendar Sources
+ * (this only needs to run once...)
+ */
+gcal.getSources(renderInitialCalendar)
+  .then(tap(sources => {
+    /* Raw sources (from Google Calendar API) */
+  }))
+  .then(parseOriginalGoogleResp)
+  .then(setMasterSources)
+  .then(tap(sources => {
+    /* Parsed sources (as given to the calendar) */
+  }))

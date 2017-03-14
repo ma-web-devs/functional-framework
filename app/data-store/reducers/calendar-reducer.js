@@ -1,57 +1,119 @@
 /**
  * Created by markgrover on 2/27/17.
  */
-import {dispatch} from '../../index'
-import {renderCalendar,populateGoogleDates, toggleCalendars,renderEventsOnNavigate} from '../../utils/calendar-utils'
+import {
+  renderInitialCalendar,
+  mapVisibleSourcesToFullCalendar,
+  toggleCalendars
+} from '../../utils/calendar-utils';
+import R, {
+  propOr,
+  map,
+  set,
+  lensProp
+} from 'ramda';
+
+
+// Set an object property {visible: true}
+// setVisibleToTrue :: Object -> Object
+const setVisibleToTrue = set(lensProp('visible'), true);
+
+
 /**
  * This Reducer is for the Calendar and any actions that stem from its views.
  *
- * @param state      - the current app state
- * @param action     - an action {type: string, action: mixed}
- * @returns {object} - the new app state (or the old state if no change)
+ * @param state {object}
+ *     the current app state
+ * @param {{type: string, action: *}} action
+ *     an action
+ * @returns {object}
+ *     the new app state (or the old state if no change)
  */
 export default (state = {}, action) => {
 
-    switch (action.type) {
+  switch (action.type) {
 
-        case 'NAVIGATE':
-            if (state.router.route == 'index') {
-                setTimeout(renderCalendar,1,state.sources);
-                setTimeout(renderEventsOnNavigate,1,state.sources);
-            } else {
-                const updatedSources = state.sources.map((source) => {
-                    source.added = false;
-                    return source;
-                });
-                return Object.assign({}, state, {sources:updatedSources});
-            }
-            return state;
-
-        case 'TOGGLEROOM':
-            const {value: {visible, room, added}} = action;
-            const {sources} = state;
-            const idx = room - 1;
-            const newRoom = Object.assign({}, sources[idx], {visible: !visible, added: !added});
-            const newSources = [].concat(sources.slice(0, idx), newRoom, sources.slice(idx+1));
-
-            const newState = Object.assign({}, state, {sources:newSources});
-
-            toggleCalendars(newState.sources[idx],newState.sources[idx].visible);
-            return newState;
-
-        case 'SOURCETOGGLED':
-            const mySources = state.sources;
-            const idX = action.value;
-            const isAdded = !mySources[idX].added;
-            const activeRoom = Object.assign({}, state,{added: isAdded});
-
-            const newSourceArr = [].concat(mySources.slice(0, idX - 1),activeRoom, mySources.slice(idX));
-            return Object.assign({}, state, {sources:newSourceArr});
+    /**
+     *  INITIAL / NAVIGATE :: On index route, show calendar and visible sources
+     */
+    case 'INITIAL':
+    case 'NAVIGATE':
+      if (action.value === "index" || state.router.route === "index") {
+        setTimeout(() => {
+          // Render the calendar
+          renderInitialCalendar();
+          // render the visible sources
+          mapVisibleSourcesToFullCalendar(propOr([], 'sources', state));
+        }, 0);
+      }
+      return state;
 
 
+    /**
+     * SET_SOURCES :: This is to add initial sources, it should not be used
+     *                to toggle sources, only update a change of actual events.
+     *                (this would remove old sources from state)
+     */
+    case 'SET_SOURCES':
+      // Remove all sources on calendar
+      $('#calendar').fullCalendar('removeEventSources');
+      // Set new sources on calendar
+      mapVisibleSourcesToFullCalendar(propOr([], 'value', action))
+      // Update state.sources
+      return Object.assign({}, state, {sources: action.value});
 
-        default:
-            // @desc Always have a default to return state object
-            return state
+
+    /**
+     * TOGGLE_ROOM :: Toggle the boolean property 'visible' on 1 source.
+     *                (source to toggle must be value of action.value)
+     */
+    case 'TOGGLE_ROOM': {
+      // Check which source is being toggled and flip the visible switch.
+      const sources = map(source => {
+        if (source === action.value) {
+          return set(lensProp('visible'), !source.visible, source);
+        }
+        return source;
+      }, state.sources);
+
+      // Remove all sources on calendar
+      $('#calendar').fullCalendar('removeEventSources');
+      // render the visible sources (from updated sources)
+      mapVisibleSourcesToFullCalendar(sources || []);
+      // Update state.sources
+      return Object.assign({}, state, {sources});
     }
-}
+
+
+    /**
+     * SHOW_ALL_SOURCES :: Set the 'visible' flag to true on all sources.
+     */
+    case 'SHOW_ALL_SOURCES': {
+      // Set all sources 'visible' property to true
+      const sources = map(setVisibleToTrue, state.sources);
+      // Remove all sources on calendar
+      $('#calendar').fullCalendar('removeEventSources');
+      // render the visible sources (from updated sources)
+      mapVisibleSourcesToFullCalendar(sources || []);
+
+      return Object.assign({}, state, {sources});
+    }
+
+
+    /**
+     * TOGGLE_DRAWER :: Toggle the boolean state.openCalendarDrawer property.
+     *                  (requires no value set on action.value)
+     */
+    case 'TOGGLE_DRAWER':
+      const openCalendarDrawer = !propOr(false, 'openCalendarDrawer', state);
+      return Object.assign({}, state, {openCalendarDrawer});
+
+
+    /**
+     * DEFAULT :: return state as-is
+     */
+    default:
+      // @desc Always have a default to return state object
+      return state
+  }
+};

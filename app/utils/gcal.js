@@ -1,5 +1,3 @@
-import momentjs from 'moment';
-
 const calendars = [
   ['bdnha1319u329g6gsr6rcksg6c@group.calendar.google.com', 'The Library'],
   ['led1grg2f8jtbtdrks7hv125fo@group.calendar.google.com', 'Cesar Chavez Room'],
@@ -28,10 +26,18 @@ function getEventsFromGoogle(calendarId) {
 const ourAPI = {
   calendars: null,
 
-  getEvents() {
-    return new Promise((resolve, reject) => {
-      !this.calendars ? reject(null) : resolve(this.calendars.then(cals => cals.reduce((acc, cal) => [].concat(acc, cal.items), [])));
-    })
+  /**
+   * Return the Promise of Google Calendar Sources.
+   * Optionally run a function first
+   *
+   * @param {Function} [precursorFn] - a function to run before returning sources
+   * @returns {Promise}
+   */
+  getSources(precursorFn) {
+    if (precursorFn && typeof precursorFn === "function") {
+      precursorFn();
+    }
+    return new Promise((resolve, reject) => !this.calendars ? reject(null) : resolve(this.calendars))
   },
 
   /**
