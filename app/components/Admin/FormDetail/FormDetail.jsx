@@ -1,9 +1,12 @@
 "use strict"
+import R from 'ramda';
 import dom from '../../../utils/dom';
 import { dispatch, dispatchAsync } from '../../../index'
 import { auth } from '../../../utils/firebase-app'
 import Field from '../../Form/Field-class';
 import BaseField from '../../Form/BaseField-class';
+
+const { is, isEmpty, propEq, prop, all, filter, map, join, compose } = R;
 
 //TODO this should be available to all forms
 // Validation
@@ -33,9 +36,14 @@ FieldType.options = BaseField.TYPES;  //available type of form controls based on
 
 
 export default ({ state, dispatch }) => {
+
+  const buttonText = state.displayControlOptions ? 'Hide Options' : 'Show Options';
+
   return (
     <div>
       <h3>Form Detail</h3>
+      <h4>{buttonText}</h4>
+      <div>The user is <b>{state.auth ? 'currently' : 'not'}</b> logged in.</div>
       <div>
         <form className="form-horizontal">
           <div className="form-group">
@@ -63,6 +71,11 @@ export default ({ state, dispatch }) => {
           </div>
         </form>
       </div>
+      <div>
+        <span className={state.auth ? 'btn btn-success' : 'btn btn-success hide'} onclick={() => dispatch({type: 'TOGGLE_OPTIONS'})} >Save</span>
+        <span className={state.auth ? 'btn btn-danger' : 'btn btn-danger hide'} >Delete</span>
+      </div> 
+
     </div>
   );
 }

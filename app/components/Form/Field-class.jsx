@@ -83,7 +83,13 @@ class Field extends BaseField {
     let htmlControl = null;
     
     if (this.type == 'select') {
-      htmlControl =  <select name="cars">{optionElements}</select>
+      htmlControl =  <select id={this.id}
+        type={this.type}
+        name={this.name}
+        value={this.value}
+        className={currentClass}
+        onchange={onChangeEvent}>
+        {optionElements}</select>
     } else {
       htmlControl = <input id={this.id}
         type={this.type}
