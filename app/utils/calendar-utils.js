@@ -10,9 +10,9 @@ import {
 
 
 const colors = {
-  'bdnha1319u329g6gsr6rcksg6c@group.calendar.google.com': {color: '#aeeea9', textColor: '#fef'},
+  'bdnha1319u329g6gsr6rcksg6c@group.calendar.google.com': {color: '#aeeea9', textColor: '#444'},
   'led1grg2f8jtbtdrks7hv125fo@group.calendar.google.com': {color: '#ff91a0', textColor: '#fef'},
-  '353tn8hvjnrtja3h21gbjgaigo@group.calendar.google.com': {color: '#acb3e8', textColor: '#fef'},
+  '353tn8hvjnrtja3h21gbjgaigo@group.calendar.google.com': {color: '#acb3e8', textColor: '#555'},
   't0gnqindnl5hfu7noj4iu3dvek@group.calendar.google.com': {color: '#ff9788', textColor: '#fef'}
 };
 

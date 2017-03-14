@@ -69,34 +69,20 @@ class Field extends BaseField {
     const onChangeEvent = this.onchange.bind(this);
     const wrapperClass = ['control-group', !this.isValid ? 'error' : ''].join(' ');
 
-
     // This only logs if this.debug == true
     this.logFieldInfo('rendering...');
 
-    let htmlControl;
 
-    if (this.type == 'select') {
-      const optionElements = R.propOr([], 'options', this);
-      htmlControl = <select name="cars">{
-        map(option => <option value={option}>{option}</option>, optionElements)
-      }
-      </select>;
-    }
-    else {
-      htmlControl = (
+    return (
+      <div className={wrapperClass}>
+
         <input id={this.id}
                type={this.type}
                name={this.name}
                value={this.value}
                className={currentClass}
                onchange={onChangeEvent} />
-      );
-    }
 
-
-    return (
-      <div className={wrapperClass}>
-        {htmlControl}
         {(!this.isValid ? <span class="help-inline error">{this.errorMsg}</span> : '')}
       </div>
     )

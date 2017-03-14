@@ -11,7 +11,7 @@ export default ({ state, dispatch }, innerContent) => {
 
         <div className="navbar-header">
           <button type="button" className="navbar-toggle"
-            dataset={{ toggle: "collapse", target: "#bs-example-navbar-collapse-1" }}>
+                  dataset={{ toggle: "collapse", target: "#bs-example-navbar-collapse-1" }}>
 
             <span className="sr-only">Toggle Nav Menu</span>
             <span className="icon-bar">&nbsp;</span>
@@ -29,11 +29,14 @@ export default ({ state, dispatch }, innerContent) => {
             <li>
               <Link route="example" state={state}>Example</Link>
             </li>
-            <li className="dropdown"><a className="dropdown-toggle" data-toggle="dropdown" href="#">Admin <span className="caret"></span></a>
+            <li className="nav-item dropdown">
+              <a className="dropdown-toggle" dataset={{toggle:"dropdown"}} href="#">
+                Admin <i className="caret"/>
+              </a>
               <ul className="dropdown-menu">
-                <li><Link route="room" state={state}>Room</Link></li>                
-                <li><Link route="form-group" state={state}>Form Group</Link></li>    
-                <li><Link route="form-detail" state={state}>Form Detail</Link></li>    
+                <li><Link route="room" state={state}>Room</Link></li>
+                <li><Link route="form-group" state={state}>Form Group</Link></li>
+                <li><Link route="form-detail" state={state}>Form Detail</Link></li>
               </ul>
             </li>
           </ul>
