@@ -69,40 +69,20 @@ class Field extends BaseField {
     const onChangeEvent = this.onchange.bind(this);
     const wrapperClass = ['control-group', !this.isValid ? 'error' : ''].join(' ');
 
-
-    //build option elements for select control
-    var optionElements = [];    
-    for (var i = 0; i < this.options.length; i++) {
-        optionElements.push(<option value={this.options[i]}>{this.options[i]}</option>);
-    } 
-
     // This only logs if this.debug == true
     this.logFieldInfo('rendering...');
 
 
-    let htmlControl = null;
-    
-    if (this.type == 'select') {
-      htmlControl =  <select id={this.id}
-        type={this.type}
-        name={this.name}
-        value={this.value}
-        className={currentClass}
-        onchange={onChangeEvent}>
-        {optionElements}</select>
-    } else {
-      htmlControl = <input id={this.id}
-        type={this.type}
-        name={this.name}
-        value={this.value}
-        className={currentClass}
-        onchange={onChangeEvent} />;
-    }
-
-
     return (
       <div className={wrapperClass}>
-        {htmlControl}
+
+        <input id={this.id}
+               type={this.type}
+               name={this.name}
+               value={this.value}
+               className={currentClass}
+               onchange={onChangeEvent} />
+
         {(!this.isValid ? <span class="help-inline error">{this.errorMsg}</span> : '')}
       </div>
     )
