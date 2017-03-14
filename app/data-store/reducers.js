@@ -15,7 +15,8 @@ export const defaultState = {
   auth:           null,
   sources:        [],
   openCalendarDrawer: false,
-  displayControlOptions: false
+  formDetails:[],
+  currentFormDetail: null
 };
 
 /**

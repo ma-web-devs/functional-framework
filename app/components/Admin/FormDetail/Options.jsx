@@ -3,29 +3,55 @@ import dom from '../../../utils/dom';
 import { dispatch, dispatchAsync } from '../../../index'
 import { auth } from '../../../utils/firebase-app'
 
-//build option elements for select control
-var optionElements = [];
-optionElements.push(<div><input type='text' value='One'></input></div>);
-optionElements.push(<div><input type='text' value='Two'></input></div>);
-
-// for (var i = 0; i < this.options.length; i++) {
-//     optionElements.push(<option value={this.options[i]}>{this.options[i]}</option>);
-// }
-
 export default ({ state, dispatch }) => {
 
-    function getOptions() {
+    function saveItem(item) {
+        var id = +item.srcElement.id;
+        var elem = 'input_'.concat(id);
 
-        return (
-            <div>
-                {optionElements}
-            </div>
-        );
+        var x = document.getElementById(elem).value;
+        var val = {
+            index: id,
+            option: x
+        };
+
+        dispatch({ type: 'SAVE_OPTION', value: val})
     }
+
+    function removeItem(item) {
+        dispatch({ type: 'REMOVE_OPTION', value: +item.srcElement.id })
+    }
+
+
+    function getInputElements() {
+        if (state.currentFormDetail.options.length > 0) {
+            var rows = [];
+            for (var i = 0; i < state.currentFormDetail.options.length; i++) {
+                var inputId = 'input_' + i;
+                var value = state.currentFormDetail.options[i];
+
+                rows.push(
+                    <div>
+                        <input id={inputId} type='text' value={value}></input>
+                        <span className="btn btn-success fa fa-save" id={i} onclick={(x) => saveItem(x)}></span>
+                        <span className="btn btn-danger fa fa-remove" id={i} onclick={(x) => removeItem(x)}></span>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    {rows}
+                </div>
+            );
+        }
+    }
+
 
     return (
         <div>
-            {getOptions()}
+            <span className='btn btn-success' onclick={() => dispatch({ type: 'ADD_OPTION' })} >Add</span>
+            {getInputElements()}
         </div>
     );
 }

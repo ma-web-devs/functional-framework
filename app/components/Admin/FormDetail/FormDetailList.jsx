@@ -3,45 +3,48 @@ import dom from '../../../utils/dom';
 import { log } from '../../../utils/logger'
 import { dispatch, dispatchAsync } from '../../../index'
 
-import Room from './form-detail-class.js'
+import FormDetail from './form-detail-class.js'
 
 
-export default ({state, dispatch}) => {
+export default ({ state, dispatch }) => {
 
-    function editRoom(key) {
-        //create new object rather than assign existing object.  This prevents the grid from updating while the item is being edited.
-        var room = Object.assign({}, state.rooms.find(x => x.key === key));
-        Room.setCurrentRoom(room);
+    function edit(detail) {
+        dispatch({ type: 'SET_CURRENT_FORM_DETAIL', value: detail })
+        dispatch({ type: 'NAVIGATE', value: 'form-detail-component' })
     }
 
-    //TODO why can't I do this?  Where would be the best place to do this?
-    // if(state.rooms.length == 0)
-    //     Room.loadRooms();
+    function add() {
+        var detail = new FormDetail();
+        edit(detail);
+    }
+
 
     function getTable() {
-        if (state.rooms.length > 0) {
+        if (state.formDetails.length > 0) {
             return (
 
                 <table className="table">
                     <thead>
                         <tr>
                             <th>Key</th>
-                            <th>#</th>
-                            <th>Room Name</th>
-                            <th>Description</th>
+                            <th>Label</th>
+                            <th>Type</th>
+                            <th>Default Value</th>
+                            <th>Required</th>
                             <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {state.rooms.map(item =>
+                        {state.formDetails.map(item =>
                             <tr>
                                 <td>{item.key}</td>
-                                <td>{item.number}</td>
-                                <td>{item.name}</td>
-                                <td>{item.description}</td>
+                                <td>{item.label}</td>
+                                <td>{item.type}</td>
+                                <td>{item.defaultValue}</td>
+                                <td>{item.required.toString()}</td>
                                 <td className="btn btn-success fa fa-pencil"
                                     onclick={
-                                        () => editRoom(item.key)
+                                        () => edit(item)
                                     }>&nbsp;</td>
                             </tr>
                         )}
@@ -54,7 +57,11 @@ export default ({state, dispatch}) => {
 
     return (
         <div>
-            <h3>Room List</h3>
+            <h3>Form Detail List</h3>
+            <div>
+                <span className={state.auth ? 'btn btn-success' : 'btn btn-success hide'} onclick={() => FormDetail.loadFormDetails()} >Load</span>
+                <span className={state.auth ? 'btn btn-success' : 'btn btn-success hide'} onclick={() => add()} >Add</span>
+            </div>
             {getTable()}
         </div>
     );

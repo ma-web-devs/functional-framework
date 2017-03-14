@@ -35,8 +35,8 @@ export default ({ state, dispatch }, innerContent) => {
               </a>
               <ul className="dropdown-menu">
                 <li><Link route="room" state={state}>Room</Link></li>
-                <li><Link route="form-group" state={state}>Form Group</Link></li>
-                <li><Link route="form-detail" state={state}>Form Detail</Link></li>
+                <li><Link route="form-group-component" state={state}>Form Group</Link></li>
+                <li><Link route="form-detail-list" state={state}>Form Detail</Link></li>
               </ul>
             </li>
           </ul>

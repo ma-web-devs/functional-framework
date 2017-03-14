@@ -5,8 +5,9 @@ import Footer from './Footer'
 import Example from './Example'
 import Calendar from './Calendar/Calendar'
 import Room from './Admin/Room/Room'
-import FormGroup from './Admin/FormGroup/FormGroup'
-import FormDetail from './Admin/FormDetail/FormDetail'
+import FormGroupComponent from './Admin/FormGroup/FormGroupComponent'
+import FormDetailComponent from './Admin/FormDetail/FormDetailComponent'
+import FormDetailList from './Admin/FormDetail/FormDetailList'
 
 import Navigation from './Navigation'
 import {Route, Link} from './Router'
@@ -41,8 +42,9 @@ const AppComponent = ({state, dispatch}) => {
         <Route route="example" state={state} dispatch={dispatch} component={Example}/>
         {/*  Admin route="" */}
         <Route route="room" state={state} dispatch={dispatch} component={Room}/>
-        <Route route="form-group" state={state} dispatch={dispatch} component={FormGroup}/>
-        <Route route="form-detail" state={state} dispatch={dispatch} component={FormDetail}/>
+        <Route route="form-group-component" state={state} dispatch={dispatch} component={FormGroupComponent}/>
+        <Route route="form-detail-component" state={state} dispatch={dispatch} component={FormDetailComponent}/>
+        <Route route="form-detail-list" state={state} dispatch={dispatch} component={FormDetailList}/>
       </section>
 
       {/* Footer */}
