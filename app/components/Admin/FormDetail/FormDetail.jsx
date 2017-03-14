@@ -6,6 +6,8 @@ import { auth } from '../../../utils/firebase-app'
 import Field from '../../Form/Field-class';
 import BaseField from '../../Form/BaseField-class';
 
+import Options from './Options'
+
 const { is, isEmpty, propEq, prop, all, filter, map, join, compose } = R;
 
 //TODO this should be available to all forms
@@ -67,14 +69,18 @@ export default ({ state, dispatch }) => {
 
           </div>
           <div className="form-group">
-            <label htmlFor="min-capacity" className="control-label col-sm-2">Combo Values</label>
+            <label className="control-label col-sm-2">Combo Values</label>
+            <div className="col-sm-10">
+              <Options state={state} />
+            </div>
           </div>
         </form>
       </div>
+
       <div>
-        <span className={state.auth ? 'btn btn-success' : 'btn btn-success hide'} onclick={() => dispatch({type: 'TOGGLE_OPTIONS'})} >Save</span>
+        <span className={state.auth ? 'btn btn-success' : 'btn btn-success hide'} onclick={() => dispatch({ type: 'TOGGLE_OPTIONS' })} >Save</span>
         <span className={state.auth ? 'btn btn-danger' : 'btn btn-danger hide'} >Delete</span>
-      </div> 
+      </div>
 
     </div>
   );
