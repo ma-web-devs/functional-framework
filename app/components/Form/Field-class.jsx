@@ -70,27 +70,27 @@ class Field extends BaseField {
     const wrapperClass = ['control-group', !this.isValid ? 'error' : ''].join(' ');
 
 
-    //build option elements for select control
-    var optionElements = [];    
-    for (var i = 0; i < this.options.length; i++) {
-        optionElements.push(<option value={this.options[i]}>{this.options[i]}</option>);
-    } 
-
     // This only logs if this.debug == true
     this.logFieldInfo('rendering...');
 
+    let htmlControl;
 
-    let htmlControl = null;
-    
     if (this.type == 'select') {
-      htmlControl =  <select name="cars">{optionElements}</select>
-    } else {
-      htmlControl = <input id={this.id}
-        type={this.type}
-        name={this.name}
-        value={this.value}
-        className={currentClass}
-        onchange={onChangeEvent} />;
+      const optionElements = R.propOr([], 'options', this);
+      htmlControl = <select name="cars">{
+        map(option => <option value={option}>{option}</option>, optionElements)
+      }
+      </select>;
+    }
+    else {
+      htmlControl = (
+        <input id={this.id}
+               type={this.type}
+               name={this.name}
+               value={this.value}
+               className={currentClass}
+               onchange={onChangeEvent} />
+      );
     }
 
 

@@ -42,7 +42,7 @@ export default ({state, dispatch}) => {
                                 <td className="btn btn-success fa fa-pencil"
                                     onclick={
                                         () => editRoom(item.key)
-                                    }></td>
+                                    }>&nbsp;</td>
                             </tr>
                         )}
                     </tbody>
