@@ -1,34 +1,9 @@
 "use strict"
 import dom from '../utils/dom'
-import {log} from '../utils/logger'
+import {dispatch} from '../index'
+import Validator from './Form/Validator';
+import {NumberInput, TextInput, Select} from './Form/form-inputs';
 
-import Field from './Form/Field-class';
-
-import {dispatch, dispatchAsync} from '../index'
-
-
-/**
- * Example onchange event on the checkbox in jsx.
- */
-function alertWhenCheckboxChanges() {
-  alert('(on)Change is Good! ...or so they say...')
-}
-
-const isEven = (value) => +value % 2 === 0;
-
-const NumberInput = new Field({
-  name: 'money-input',
-  type:         'number',
-  defaultValue: 10, // THIS MIGHT NOT WORK YET
-  props: {
-    step: 1,
-    max: 1000,
-    min: 0
-  },
-  errorMsg: 'Only Even Numbers Allowed!',
-  willDispatch: false,
-  validation: isEven
-});
 
 
 /**
@@ -38,36 +13,38 @@ const NumberInput = new Field({
  *
  * @param {object} state - contains the state of app passed in from index.js
  */
-const ExampleComponent = ({state: {balance}}) => {
-  // Using destructuring in the params above we don't have to do
-  // const balance = state.balance
-  // uncomment line below, it's already set
-  // log(`balance -> ${balance}`)
+const ExampleComponent = ({state}) => {
 
-  /**
-   * IT IS GOOD TO KNOW:
-   *     'BANK_SUBMIT_INVALID', 'WITHDRAW_INVALID' AND 'NOT_HANDLED_BUT_NEEDED'
-   *     are all unhandled dispatches. The reason they are needed is that they
-   *     updated the Field when it is invalid.
-   *        -- reason: in order to re-render field showing validation message
-   *                   this component needs to re-render, so something, anything,
-   *                   it doesn't matter really, has to be dispatched to show
-   *                   validation markup.
-   */
+  const {example: {balance, form}} = state;
+
+  // Create a Field (this can be done in or out of the
+  // ExampleComponent), it's stateless.
+  const isEven = (value) => +value % 2 === 0;
+  const AmountField = Validator(NumberInput, isEven);
 
   return (
     <div>
-      {/*  Sending Action Up Into Redux-ish (see data-store/reducers.js) */}
-
-      <form className="form" onsubmit={()=>NumberInput.condDispatch('DEPOSIT', 'BANK_SUBMIT_INVALID', false)}>
+      <form className="form">
         <legend>Deposit or Withdraw from the Bank.</legend>
         <h4 className="label"> balance: {balance}</h4>
 
         <div className="form-group">
+
           {/* Input to select amount to add or subtract */}
           <label htmlFor="money-input">Monopoly Moneys:
+
+            <AmountField min="0" max="1000" step="1"
+                         onChange={(e) => dispatch({type: 'EXAMPLE_FORM_CHANGE', value: e.target})}
+                         value={form.amount.value}>
+
+              {/* The child is the validation message */}
+              <span class="help-inline error">
+                Sorry, only even numbers allowed for this field.
+              </span>
+            </AmountField>
+
           </label>
-          {NumberInput.jsx()}
+
         </div>
 
         <div className="form-group">

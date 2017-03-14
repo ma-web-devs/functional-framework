@@ -39,17 +39,52 @@ function withdrawMoneyAction(state, action) {
  * @returns {object} - the new app state (or the old state if no change)
  */
 export default (state = {}, action) => {
-
   switch (action.type) {
+
+    case 'INITIAL':
+      return Object.assign({}, state, {
+        example: {
+          balance: 0,
+          form: {
+            amount: {
+              type: 'number',
+              value: 0
+            },
+            name:    {
+              value: '',
+              type:  'text'
+            },
+            country: {
+              type:    'select',
+              value:   'US',
+              options: [
+                {text: 'United States', value: 'US'},
+                {text: 'Canada', value: 'CA'},
+                {text: 'England', value: 'GB'},
+                {text: 'China', value: 'CN'},
+                {text: 'Germany', value: 'DE'},
+                {text: 'Moon Colony', value: 'USC'}
+              ]
+            }
+          }
+        }
+      });
+
+
+    case 'EXAMPLE_FORM_CHANGE':
+      const {value, inputName:name} = action.value;
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)
 
+
     case 'WITHDRAW':
       return withdrawMoneyAction(state, action)
+
 
     default:
       // @desc Always have a default to return state object
       return state
+
   }
 }

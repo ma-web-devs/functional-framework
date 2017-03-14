@@ -17,13 +17,13 @@ import {Route, Link} from './Router'
  *
  * @param {object} state - contains the state of app passed in from index.js
  */
-const AppComponent = ({state, dispatch}) => {
+const AppComponent = (props) => {
 
   return (
     <div className="container">
 
       {/*  Navigation  */}
-      <Navigation state={state} dispatch={dispatch}>
+      <Navigation {...props}>
         {/* Note: Nested children will be the 2nd argument passed to your component */}
         <strong>Democracy Center</strong>
         <span className="small">
@@ -36,17 +36,17 @@ const AppComponent = ({state, dispatch}) => {
 
       <section className="row">
         {/*  Calendar route="calendar" */}
-        <Route route="index" state={state} dispatch={dispatch} component={Calendar}/>
+        <Route route="index" {...props} Component={Calendar}/>
         {/* Example route="example" */}
-        <Route route="example" state={state} dispatch={dispatch} component={Example}/>
-        {/*  Admin route="" */}
-        <Route route="room" state={state} dispatch={dispatch} component={Room}/>
-        <Route route="form-group" state={state} dispatch={dispatch} component={FormGroup}/>
-        <Route route="form-detail" state={state} dispatch={dispatch} component={FormDetail}/>
+        <Route route="example" {...props} Component={Example}/>
+        {/*  Admin route="room" */}
+        <Route route="room" {...props} Component={Room}/>
+        <Route route="form-group" {...props} Component={FormGroup}/>
+        <Route route="form-detail" {...props} Component={FormDetail}/>
       </section>
 
       {/* Footer */}
-      <Footer state={state}>
+      <Footer {...props}>
         <strong className="lead label label-danger">
           <i className="fa fa-copyright"></i> MA <em>Web</em>
         </strong> <em className="lead label label-info">Developers</em>

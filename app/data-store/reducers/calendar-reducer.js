@@ -37,16 +37,21 @@ export default (state = {}, action) => {
      *  INITIAL / NAVIGATE :: On index route, show calendar and visible sources
      */
     case 'INITIAL':
-    case 'NAVIGATE':
+    case 'NAVIGATE': {
+
+      // All Sources should be visible on page navigation
+      const sources = map(setVisibleToTrue, propOr([], 'sources', state));
+
       if (action.value === "index" || state.router.route === "index") {
         setTimeout(() => {
           // Render the calendar
           renderInitialCalendar();
           // render the visible sources
-          mapVisibleSourcesToFullCalendar(propOr([], 'sources', state));
+          mapVisibleSourcesToFullCalendar(sources);
         }, 0);
       }
-      return state;
+      return Object.assign({}, state, {sources, openCalendarDrawer: false});
+    }
 
 
     /**

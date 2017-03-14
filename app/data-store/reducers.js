@@ -7,13 +7,10 @@ import calendarReducers from './reducers/calendar-reducer'
 import {combineReducers} from './index'
 
 export const defaultState = {
-  balance:        0,
   rooms:          [],
   currentRoom:    null,
   router:         getInitialRouter(window.location),
-  auth:           null,
-  sources:        [],
-  openCalendarDrawer: false
+  auth:           null
 };
 
 /**
