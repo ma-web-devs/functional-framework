@@ -1,9 +1,9 @@
 "use strict"
 import dom from '../utils/dom'
 import {dispatch} from '../index'
-import Validator from './Form/Validator';
+import Validator from './Form/HigherOrderValidator';
+import HigherOrderForm from './Form/HigherOrderForm';
 import {NumberInput, TextInput, Select} from './Form/form-inputs';
-
 
 
 /**
@@ -22,18 +22,24 @@ const ExampleComponent = ({state}) => {
   const isEven = (value) => +value % 2 === 0;
   const AmountField = Validator(NumberInput, isEven);
 
+  const Form = HigherOrderForm((evt) => {
+    // submit event
+    alert();
+  });
+
   return (
     <div>
-      <form className="form">
+      <Form className="form">
         <legend>Deposit or Withdraw from the Bank.</legend>
         <h4 className="label"> balance: {balance}</h4>
 
         <div className="form-group">
 
           {/* Input to select amount to add or subtract */}
-          <label htmlFor="money-input">Monopoly Moneys:
+          <label htmlFor="money-input">Monopoly Moneys from -100 to 1000:
 
-            <AmountField min="0" max="1000" step="1"
+            <AmountField min="-100" max="1000" step="1"
+                         name="amount"
                          onChange={(e) => dispatch({type: 'EXAMPLE_FORM_CHANGE', value: e.target})}
                          value={form.amount.value}>
 
@@ -49,30 +55,15 @@ const ExampleComponent = ({state}) => {
 
         <div className="form-group">
           {/* Buttons to dispatch the action */}
-          <span className="btn btn-success fa fa-arrow-circle-o-up"
-                onclick={bankTransaction('DEPOSIT', NumberInput)}> &nbsp; DEPOSIT</span>
-          <span className="btn btn-danger fa fa-arrow-circle-down"
-                onclick={() => NumberInput.condDispatch('WITHDRAW', 'WITHDRAW_INVALID')}> &nbsp; WITHDRAW</span>
+          <button type="submit" className="btn btn-success fa fa-paperclip"> &nbsp; TRANSACTION GO!</button>
         </div>
 
-      </form>
+      </Form>
 
     </div>
   )
 }
 
 
-function bankTransaction(transType, inputField) {
-  return () => {
-    // Dispatch the action (handled in app/data-store/reducers/example-reducer.js)
-    if (inputField.isValid) {
-      dispatch({type: transType, value: +(inputField.value)})
-    }
-    else {
-      // HANDLE SOME ERROR IN VALIDATION?
-      dispatch({type: 'NOT_HANDLED_BUT_NEEDED', value: ''})
-    }
-  }
-}
 
 export default ExampleComponent

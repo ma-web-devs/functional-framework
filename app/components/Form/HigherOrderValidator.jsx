@@ -3,35 +3,36 @@ import dom from '../../utils/dom'
 
 
 /**
- * Validation (higher-order component)
+ * HigherOrderInputValidator (higher-order component)
  *
  * Wrap an input to get new input component with built-in
  * validation
  *
- * @param FormFieldComponent
+ * @param InputField
  * @param validationFn
  * @returns {Function}
  * @constructor
  */
-const Validation = (FormFieldComponent, validationFn) => {
+const HigherOrderInputValidator = (InputField, validationFn) => {
 
   let validationClassName = ''
 
   return function(props, children) {
 
-    const isValid = validationFn(props.value)
+    const valid = validationFn(props.value)
 
     return (
       <div className={validationClassName}>
 
         {/* The input field wrapped by Validator */}
-        <FormFieldComponent {...props}>
+        <InputField {...Object.assign({}, props, {valid})}>
           {children}
-        </FormFieldComponent>
+        </InputField>
 
       </div>
     )
   }
 }
 
-export default Validation
+
+export default HigherOrderInputValidator

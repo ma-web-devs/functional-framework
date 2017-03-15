@@ -1,3 +1,6 @@
+import R from 'ramda';
+
+
 /**
  * Action to handle depositing Monopoly Money into the bank
  * @param state
@@ -50,13 +53,13 @@ export default (state = {}, action) => {
               type: 'number',
               value: 0
             },
-            name:    {
+            name: {
               value: '',
-              type:  'text'
+              type: 'text'
             },
             country: {
-              type:    'select',
-              value:   'US',
+              type: 'select',
+              value: 'US',
               options: [
                 {text: 'United States', value: 'US'},
                 {text: 'Canada', value: 'CA'},
@@ -72,7 +75,14 @@ export default (state = {}, action) => {
 
 
     case 'EXAMPLE_FORM_CHANGE':
-      const {value, inputName:name} = action.value;
+      let {example: {form}} = state;
+      const {value, name:inputName} = action.value;
+
+      if (inputName in form) {
+        return R.set(R.lensPath(['example', 'form', inputName, 'value']), value)(state);
+      }
+      return state;
+
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)
@@ -88,3 +98,4 @@ export default (state = {}, action) => {
 
   }
 }
+

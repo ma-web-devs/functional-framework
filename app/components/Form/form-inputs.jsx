@@ -14,7 +14,7 @@ export const TextInput = setupInputField('text');
 export default function setupInputField (type='text', fieldAttrs=[]) {
 
   // Properties that all inputs have
-  const commonAttrs = ['value', 'disabled', 'readonly', 'className'];
+  const commonAttrs = ['id', 'name', 'value', 'disabled', 'readonly', 'className'];
   // A Util to pull attrs off the props (that will be passed in by form)
   const pickAttrsFromProps = R.pickAll([...commonAttrs, ...fieldAttrs]);
 
@@ -22,8 +22,8 @@ export default function setupInputField (type='text', fieldAttrs=[]) {
   return function (props, children) {
 
     const {
-            onChange, isValid=true, noDispatch=false, eventName='INPUT_ONCHANGE'
-          } = props
+      onChange, isValid=true, noDispatch=false, eventName='INPUT_ONCHANGE'
+    } = props
 
     const attrs = pickAttrsFromProps(props);
 
