@@ -7,10 +7,14 @@ import {createStore} from './data-store/index'
 import {database, auth} from './utils/firebase-app'
 import reducers, {defaultState} from 'data-store/reducers'
 import {setupRouterPopstate} from 'data-store/reducers/router-reducer'
+import awesome from './utils/helpers'
 
 
 // Setup Our Store. (also only needs to be done once)
-const {subscribe, dispatch, dispatchAsync, getState} = createStore(reducers, defaultState)
+const {subscribe, dispatch, dispatchAsync, getState} = createStore(
+  reducers, defaultState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 
 /**
@@ -39,8 +43,7 @@ const unsubscribe = subscribe(
      *              then you'll never have to worry about actualy calling
      *              updateView
      */
-    updateView(updatedState)
-    return void 0
+    return updateView(getState())
 })
 
 // Setup the router so history works

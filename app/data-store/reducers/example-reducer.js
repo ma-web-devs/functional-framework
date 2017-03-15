@@ -1,3 +1,5 @@
+import ActionTypes from '../index'
+
 /**
  * Action to handle depositing Monopoly Money into the bank
  * @param state
@@ -41,6 +43,9 @@ function withdrawMoneyAction(state, action) {
 export default (state = {}, action) => {
 
   switch (action.type) {
+
+    case ActionTypes.INIT:
+      return state
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)

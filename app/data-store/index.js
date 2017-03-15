@@ -8,6 +8,11 @@ const logAction = type => log.bind(log, `%cAction %c${type}: `, `${LOGSTYLE}rgb(
 const logCurrentState = log.bind(log, `%cState: `, `${LOGSTYLE}rgb(177, 116, 45)`)
 const logNextState = log.bind(log, `%cNext State: `, `${LOGSTYLE}rgb(53, 69, 180)`)
 
+export const ActionTypes = {
+  // THIS IS THE INIT THAT IS GIVEN BY ACTUAL REDUX LIB
+  INIT: '@@redux/INIT'
+}
+
 /**
  * @typedef Store
  * @type object
@@ -23,16 +28,35 @@ const logNextState = log.bind(log, `%cNext State: `, `${LOGSTYLE}rgb(53, 69, 180
  * @param  {object} state - Initial state for store.
  * @return {Store}
  */
-export function createStore(reducer, state) {
+export function createStore(reducer, state, reduxDevTools) {
   let currentReducer = reducer
   let currentState = state
   let currentSubscribers = []
   let nextSubscribers = []
   let isDispatching = false
 
+  if (reduxDevTools && typeof reduxDevTools === "function") {
+    console.log('setting up the redux dev tool');
+    return reduxDevTools(createStore)(reducer, state);
+  }
+
   const getState = () => currentState
   const subscribe = listenerFn => {
     nextSubscribers.push(listenerFn)
+    let isSubscribed = true;
+
+    nextSubscribers.push(listenerFn);
+
+    return () => {
+      if (!isSubscribed) {
+        return void 0;
+      }
+
+      isSubscribed = false;
+
+      // This has to mutate
+      nextSubscribers.splice(nextSubscribers.indexOf(listenerFn));
+    }
   }
 
 
@@ -47,17 +71,17 @@ export function createStore(reducer, state) {
     try {
       action.value = action.value;
       logAction(action.type)(action)
-      logCurrentState(currentState)
+      logCurrentState(getState())
       // 1. Get the new state.
-      const nextState = reducer(currentState, action)
+      const nextState = reducer(getState(), action)
       logNextState(nextState)
       // 1. Update the current state.
       currentState = nextState
       // 2. Any new subscribers will now be part of current Subscribers.
       currentSubscribers = nextSubscribers
-      // 3. Update all subscribers with the new state.
+      // 3. Update all subscribers that state changed (do not pass them state).
       currentSubscribers.forEach(listener => {
-        listener(currentState)
+        listener()
       })
       nextSubscribers = currentSubscribers.slice(0)
     } finally {
@@ -89,12 +113,26 @@ export function createStore(reducer, state) {
   }
 
 
+
+  function replaceReducer(nextReducer) {
+    if (typeof nextReducer !== 'function') {
+      throw `You may only replace reducers with another function`
+    }
+
+    currentReducer = nextReducer
+    // Do the init event after replacing old reducer
+    dispatch({ type: ActionTypes.INIT })
+  }
+
+
   // Set off an initial dispatch (or else state will be empty)
-  dispatch({type: 'INITIAL', value: currentState})
+  dispatch({ type: ActionTypes.INIT, value: currentState})
+
   return {
     subscribe,
     dispatch,
     dispatchAsync,
+    replaceReducer,
     getState
   }
 }

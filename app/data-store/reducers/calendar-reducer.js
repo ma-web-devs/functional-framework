@@ -1,6 +1,4 @@
-/**
- * Created by markgrover on 2/27/17.
- */
+import ActionTypes from '../index';
 import {
   renderInitialCalendar,
   mapVisibleSourcesToFullCalendar,
@@ -36,7 +34,7 @@ export default (state = {}, action) => {
     /**
      *  INITIAL / NAVIGATE :: On index route, show calendar and visible sources
      */
-    case 'INITIAL':
+    case ActionTypes.INIT:
     case 'NAVIGATE':
       if (action.value === "index" || state.router.route === "index") {
         setTimeout(() => {
