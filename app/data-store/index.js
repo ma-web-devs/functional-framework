@@ -8,6 +8,14 @@ const logAction = type => log.bind(log, `%cAction %c${type}: `, `${LOGSTYLE}rgb(
 const logCurrentState = log.bind(log, `%cState: `, `${LOGSTYLE}rgb(177, 116, 45)`)
 const logNextState = log.bind(log, `%cNext State: `, `${LOGSTYLE}rgb(53, 69, 180)`)
 
+function logStateMessages(currentState, nextState, action) {
+  if (!logStateMessages.hideLog) {
+    logAction(action.type)(action)
+    logCurrentState(currentState)
+    logNextState(nextState)
+  }
+}
+
 export const ActionTypes = {
   // THIS IS THE INIT THAT IS GIVEN BY ACTUAL REDUX LIB
   INIT: '@@redux/INIT'
@@ -37,6 +45,8 @@ export function createStore(reducer, state, reduxDevTools) {
 
   if (reduxDevTools && typeof reduxDevTools === "function") {
     console.log('setting up the redux dev tool');
+    // Don't log messages with dev tools configured and running
+    logStateMessages.hideLog = true
     return reduxDevTools(createStore)(reducer, state);
   }
 
@@ -71,11 +81,10 @@ export function createStore(reducer, state, reduxDevTools) {
 
     try {
       action.value = action.value;
-      logAction(action.type)(action)
-      logCurrentState(getState())
       // 1. Get the new state.
       const nextState = reducer(getState(), action)
-      logNextState(nextState)
+      // TODO: The logToRegularConsole could become an enhancer (not inline code)
+      logStateMessages(getState(), nextState, action)
       // 1. Update the current state.
       currentState = nextState
       // 2. Any new subscribers will now be part of current Subscribers.
