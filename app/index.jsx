@@ -35,7 +35,7 @@ const updateView = renderDOM(
 // will be a 1 page 1 view app. I'll never unsubscribe from Netflix either,
 // but it's nice knowing that I have the choice.
 const unsubscribe = subscribe(
-  updatedState => {
+  () => {
     /*
      * `updateview` needs to be called everytime the state is updated
      *              Unless you change something without using the dispatch

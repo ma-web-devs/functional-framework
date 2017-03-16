@@ -1,4 +1,3 @@
-import ActionTypes from '../index'
 
 /**
  * Action to handle depositing Monopoly Money into the bank
@@ -44,8 +43,8 @@ export default (state = {}, action) => {
 
   switch (action.type) {
 
-    case ActionTypes.INIT:
-      return state
+    case '@@INIT':
+      return Object.assign({}, state, {balance: 0})
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)

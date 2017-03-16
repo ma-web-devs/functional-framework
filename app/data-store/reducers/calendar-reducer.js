@@ -1,4 +1,3 @@
-import ActionTypes from '../index';
 import {
   renderInitialCalendar,
   mapVisibleSourcesToFullCalendar,
@@ -34,7 +33,12 @@ export default (state = {}, action) => {
     /**
      *  INITIAL / NAVIGATE :: On index route, show calendar and visible sources
      */
-    case ActionTypes.INIT:
+    case '@@INIT':
+      state = Object.assign({}, state, {
+        sources: [],
+        openCalendarDrawer: false
+      })
+
     case 'NAVIGATE':
       if (action.value === "index" || state.router.route === "index") {
         setTimeout(() => {

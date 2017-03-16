@@ -41,6 +41,7 @@ export function createStore(reducer, state, reduxDevTools) {
   }
 
   const getState = () => currentState
+
   const subscribe = listenerFn => {
     nextSubscribers.push(listenerFn)
     let isSubscribed = true;
@@ -126,7 +127,7 @@ export function createStore(reducer, state, reduxDevTools) {
 
 
   // Set off an initial dispatch (or else state will be empty)
-  dispatch({ type: ActionTypes.INIT, value: currentState})
+  dispatch({ type: ActionTypes.INIT, value: getState()})
 
   return {
     subscribe,

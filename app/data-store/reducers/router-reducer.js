@@ -1,4 +1,3 @@
-import ActionTypes from '../index'
 const DEFAULT_ROUTE = 'index'
 
 /**
@@ -76,8 +75,8 @@ export default (state = {}, action) => {
 
   switch (action.type) {
 
-    case ActionTypes.INIT:
-      return state
+    case '@@INIT':
+      return configureStateRouter(state, {value: DEFAULT_ROUTE})
 
     /**
      * Takes a route name and set router.route to that name
