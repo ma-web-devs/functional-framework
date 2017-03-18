@@ -1,3 +1,4 @@
+import {updateAt} from '../../utils/helpers';
 
 /**
  * Action to handle depositing Monopoly Money into the bank
@@ -10,7 +11,7 @@ function depositMoneyAction(state, action) {
   const newBalance = oldBalance + action.value;
 
   // Clones the state object and then overwrites state.balance
-  return Object.assign({}, state, {balance: newBalance})
+  return updateAt('balance')(newBalance, state);
 }
 
 
