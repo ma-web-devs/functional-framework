@@ -661,7 +661,7 @@ babel-register@^6.22.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0:
+babel-runtime@^6.18.0, babel-runtime@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.22.0.tgz#1cf8b4ac67c77a4ddb0db2ae1f74de52ac4ca611"
   dependencies:
@@ -1157,6 +1157,12 @@ css-selector-tokenizer@^0.7.0:
     fastparse "^1.1.1"
     regexpu-core "^1.0.0"
 
+"cssauron@git://github.com/featurist/cssauron.git#case-insensitive-tags":
+  version "1.2.0"
+  resolved "git://github.com/featurist/cssauron.git#bda120df8ca5eb19568a7410b81102756008f514"
+  dependencies:
+    through X.X.X
+
 cssesc@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/cssesc/-/cssesc-0.1.0.tgz#c814903e45623371a0477b40109aaafbeeaddbb4"
@@ -1230,12 +1236,6 @@ dashdash@^1.12.0:
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
   dependencies:
     assert-plus "^1.0.0"
-
-date-input-polyfill@^2.12.0:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/date-input-polyfill/-/date-input-polyfill-2.12.0.tgz#74d9a1d60b37a76c41c2be6e73518aa70532ae12"
-  dependencies:
-    babel-runtime "^6.11.6"
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -1986,6 +1986,10 @@ hawk@~3.1.3:
     hoek "2.x.x"
     sntp "1.x.x"
 
+he@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/he/-/he-0.5.0.tgz#2c05ffaef90b68e860f3fd2b54ef580989277ee2"
+
 hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
@@ -2000,6 +2004,10 @@ home-or-tmp@^2.0.0:
 hosted-git-info@^2.1.4:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.2.0.tgz#7a0d097863d886c0fabbdcd37bf1758d8becf8a5"
+
+html-attributes@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/html-attributes/-/html-attributes-1.1.0.tgz#82027a4fac7a6070ea6c18cc3886aea18d6dea09"
 
 html-comment-regex@^1.1.0:
   version "1.1.1"
@@ -2563,6 +2571,10 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
+lower-case@^1.1.1:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
+
 lru-cache@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.0.2.tgz#1d17679c069cda5d040991a09dbc2c0db377e55e"
@@ -2964,6 +2976,12 @@ output-file-sync@^1.1.0:
 pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
+
+param-case@^1.0.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/param-case/-/param-case-1.1.2.tgz#dcb091a43c259b9228f1c341e7b6a44ea0bf9743"
+  dependencies:
+    sentence-case "^1.1.2"
 
 parse-glob@^3.0.4:
   version "3.0.4"
@@ -3677,6 +3695,12 @@ send@0.14.2:
     range-parser "~1.2.0"
     statuses "~1.3.1"
 
+sentence-case@^1.1.2:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/sentence-case/-/sentence-case-1.1.3.tgz#8034aafc2145772d3abe1509aa42c9e1042dc139"
+  dependencies:
+    lower-case "^1.1.1"
+
 serve-index@^1.7.2:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/serve-index/-/serve-index-1.8.0.tgz#7c5d96c13fb131101f93c1c5774f8516a1e78d3b"
@@ -3927,6 +3951,10 @@ supports-color@^3.1.0, supports-color@^3.1.1, supports-color@^3.2.3:
   dependencies:
     has-flag "^1.0.0"
 
+svg-attributes@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/svg-attributes/-/svg-attributes-1.0.0.tgz#b5c5968f36247b7dbe3853207f2a9c68ad806bfc"
+
 svgo@^0.7.0:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/svgo/-/svgo-0.7.2.tgz#9f5772413952135c6fefbf40afe6a4faa88b4bb5"
@@ -3983,7 +4011,7 @@ text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
-through@^2.3.6:
+through@X.X.X, through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
@@ -4179,6 +4207,18 @@ vary@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.0.tgz#e1e5affbbd16ae768dd2674394b9ad3022653140"
 
+"vdollar@git://github.com/featurist/vdollar.git":
+  version "1.0.0"
+  resolved "git://github.com/featurist/vdollar.git#6c91fc4c6ce7e2c7a932b2fd521c7aa5bb64cfe0"
+
+vdom-query@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/vdom-query/-/vdom-query-0.0.1.tgz#0f80d8661a94f709fec1b25f8ef48fb5ced47955"
+  dependencies:
+    vdollar "git://github.com/featurist/vdollar.git"
+    virtual-dom-stringify "2.1.0"
+    vtree-select "git://github.com/featurist/vtree-select.git"
+
 vendors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.1.tgz#37ad73c8ee417fb3d580e785312307d274847f22"
@@ -4188,6 +4228,29 @@ verror@1.3.6:
   resolved "https://registry.yarnpkg.com/verror/-/verror-1.3.6.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
   dependencies:
     extsprintf "1.0.2"
+
+virtual-dom-stringify@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/virtual-dom-stringify/-/virtual-dom-stringify-2.1.0.tgz#14df1cd3848e35a0c5f62265d9398bea27348957"
+  dependencies:
+    he "^0.5.0"
+    html-attributes "^1.1.0"
+    param-case "^1.0.1"
+    svg-attributes "^1.0.0"
+    virtual-dom "^1.0.0"
+
+virtual-dom@^1.0.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/virtual-dom/-/virtual-dom-1.3.0.tgz#495b408165fe31d710633a8c16eda3a29fd4ce48"
+  dependencies:
+    browser-split "0.0.1"
+    error "^4.3.0"
+    ev-store "^7.0.0"
+    global "^4.3.0"
+    is-object "^1.0.1"
+    next-tick "^0.2.2"
+    x-is-array "0.1.0"
+    x-is-string "0.1.0"
 
 virtual-dom@^2.1.1:
   version "2.1.1"
@@ -4207,6 +4270,12 @@ vm-browserify@0.0.4:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
+
+"vtree-select@git://github.com/featurist/vtree-select.git":
+  version "1.0.3"
+  resolved "git://github.com/featurist/vtree-select.git#46ad41fef2518c299221651c65b26a78dc62f4fe"
+  dependencies:
+    cssauron "git://github.com/featurist/cssauron.git#case-insensitive-tags"
 
 watchpack@^0.2.1:
   version "0.2.9"

@@ -7,10 +7,14 @@ import {createStore} from './data-store/index'
 import {database, auth} from './utils/firebase-app'
 import reducers, {defaultState} from 'data-store/reducers'
 import {setupRouterPopstate} from 'data-store/reducers/router-reducer'
+import awesome from './utils/helpers'
 
 
 // Setup Our Store. (also only needs to be done once)
-const {subscribe, dispatch, dispatchAsync, getState} = createStore(reducers, defaultState)
+const {subscribe, dispatch, dispatchAsync, getState} = createStore(
+  reducers, defaultState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 
 /**
@@ -31,7 +35,7 @@ const updateView = renderDOM(
 // will be a 1 page 1 view app. I'll never unsubscribe from Netflix either,
 // but it's nice knowing that I have the choice.
 const unsubscribe = subscribe(
-  updatedState => {
+  () => {
     /*
      * `updateview` needs to be called everytime the state is updated
      *              Unless you change something without using the dispatch
@@ -39,8 +43,7 @@ const unsubscribe = subscribe(
      *              then you'll never have to worry about actualy calling
      *              updateView
      */
-    updateView(updatedState)
-    return void 0
+    return updateView(getState())
 })
 
 // Setup the router so history works

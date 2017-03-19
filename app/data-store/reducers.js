@@ -10,7 +10,6 @@ import {combineReducers} from './index'
 export const defaultState = {
   rooms:          [],
   currentRoom:    null,
-  router:         getInitialRouter(window.location),
   auth:           null,
   formDetails:[],
   currentFormDetail: null

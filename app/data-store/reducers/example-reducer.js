@@ -1,5 +1,4 @@
-import R from 'ramda';
-
+import {updateAt} from '../../utils/helpers';
 
 /**
  * Action to handle depositing Monopoly Money into the bank
@@ -12,7 +11,7 @@ function depositMoneyAction(state, action) {
   const newBalance = oldBalance + action.value;
 
   // Clones the state object and then overwrites state.balance
-  return Object.assign({}, state, {balance: newBalance})
+  return updateAt('balance')(newBalance, state);
 }
 
 
@@ -42,60 +41,20 @@ function withdrawMoneyAction(state, action) {
  * @returns {object} - the new app state (or the old state if no change)
  */
 export default (state = {}, action) => {
+
   switch (action.type) {
 
-    case 'INITIAL':
-      return Object.assign({}, state, {
-        example: {
-          balance: 0,
-          form: {
-            amount: {
-              type: 'number',
-              value: 0
-            },
-            name: {
-              value: '',
-              type: 'text'
-            },
-            country: {
-              type: 'select',
-              value: 'US',
-              options: [
-                {text: 'United States', value: 'US'},
-                {text: 'Canada', value: 'CA'},
-                {text: 'England', value: 'GB'},
-                {text: 'China', value: 'CN'},
-                {text: 'Germany', value: 'DE'},
-                {text: 'Moon Colony', value: 'USC'}
-              ]
-            }
-          }
-        }
-      });
-
-
-    case 'EXAMPLE_FORM_CHANGE':
-      let {example: {form}} = state;
-      const {value, name:inputName} = action.value;
-
-      if (inputName in form) {
-        return R.set(R.lensPath(['example', 'form', inputName, 'value']), value)(state);
-      }
-      return state;
-
+    case '@@INIT':
+      return Object.assign({}, state, {balance: 0})
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)
 
-
     case 'WITHDRAW':
       return withdrawMoneyAction(state, action)
-
 
     default:
       // @desc Always have a default to return state object
       return state
-
   }
 }
-

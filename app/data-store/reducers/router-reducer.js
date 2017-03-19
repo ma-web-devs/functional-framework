@@ -74,6 +74,10 @@ export const setupRouterPopstate = (dispatch, environment = {}) => {
 export default (state = {}, action) => {
 
   switch (action.type) {
+
+    case '@@INIT':
+      return configureStateRouter(state, {value: DEFAULT_ROUTE})
+
     /**
      * Takes a route name and set router.route to that name
      */

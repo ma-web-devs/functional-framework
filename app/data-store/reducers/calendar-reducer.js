@@ -1,6 +1,3 @@
-/**
- * Created by markgrover on 2/27/17.
- */
 import {
   renderInitialCalendar,
   mapVisibleSourcesToFullCalendar,
@@ -36,22 +33,22 @@ export default (state = {}, action) => {
     /**
      *  INITIAL / NAVIGATE :: On index route, show calendar and visible sources
      */
-    case 'INITIAL':
-    case 'NAVIGATE': {
+    case '@@INIT':
+      state = Object.assign({}, state, {
+        sources: [],
+        openCalendarDrawer: false
+      })
 
-      // All Sources should be visible on page navigation
-      const sources = map(setVisibleToTrue, propOr([], 'sources', state));
-
+    case 'NAVIGATE':
       if (action.value === "index" || state.router.route === "index") {
         setTimeout(() => {
           // Render the calendar
           renderInitialCalendar();
           // render the visible sources
-          mapVisibleSourcesToFullCalendar(sources);
+          mapVisibleSourcesToFullCalendar(propOr([], 'sources', state));
         }, 0);
       }
-      return Object.assign({}, state, {sources, openCalendarDrawer: false});
-    }
+      return state;
 
 
     /**
