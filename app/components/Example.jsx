@@ -13,7 +13,7 @@ import {NumberInput, TextInput, Select} from './Form/form-inputs';
  *
  * @param {object} state - contains the state of app passed in from index.js
  */
-const ExampleComponent = ({state}) => {
+const ExampleComponent = ({state, dispatch}) => {
 
   const {example: {balance, form}} = state;
 
@@ -23,8 +23,8 @@ const ExampleComponent = ({state}) => {
   const AmountField = Validator(NumberInput, isEven);
 
   const Form = HigherOrderForm((evt) => {
-    // submit event
-    alert();
+    // Form submission event
+    console.log('Form submission! (doesn\'t do anything)')
   });
 
   return (
@@ -40,12 +40,12 @@ const ExampleComponent = ({state}) => {
 
             <AmountField min="-100" max="1000" step="1"
                          name="amount"
-                         onChange={(e) => dispatch({type: 'EXAMPLE_FORM_CHANGE', value: e.target})}
+                         onChange={({value}) => dispatch({type: 'EX_CHANGE_AMOUNT', value: value})}
                          value={form.amount.value}>
 
               {/* The child is the validation message */}
               <span class="help-inline error">
-                Sorry, only even numbers allowed for this field.
+                <i className="fa fa-exclamation-triangle"/> &nbsp; Sorry, only even numbers allowed for this field.
               </span>
             </AmountField>
 

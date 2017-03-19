@@ -19,24 +19,25 @@ export default function setupInputField (type='text', fieldAttrs=[]) {
   const pickAttrsFromProps = R.pickAll([...commonAttrs, ...fieldAttrs]);
 
   /*- INPUT COMPONENT -*/
-  return function (props, children) {
+  return function (props, Children) {
 
     const {
-      onChange, isValid=true, noDispatch=false, eventName='INPUT_ONCHANGE'
+      onChange, valid=true, eventName='INPUT_ONCHANGE'
     } = props
 
     const attrs = pickAttrsFromProps(props);
 
     // An event proxy to send onchange out
     const proxyEvent = (evt)=> {
+
       return R.is(Function, onChange) ?
-        onChange(evt) : dispatch({type: eventName, value: evt.target.value});
+        onChange(evt.target) : dispatch({type: eventName, value: evt.target.value});
     }
 
     return (
       <span>
       <input type={type} {...attrs} onchange={proxyEvent}/>
-        {(isValid === false ? {children} : [])}
+        {(valid === false ? Children : '')}
     </span>
     )
   }

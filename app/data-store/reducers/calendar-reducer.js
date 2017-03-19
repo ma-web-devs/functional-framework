@@ -15,6 +15,18 @@ import R, {
 // setVisibleToTrue :: Object -> Object
 const setVisibleToTrue = set(lensProp('visible'), true);
 
+/**
+ * Render the calendar from state (on next tick)
+ * @param state
+ */
+const renderCalenderIO = (state) => {
+  setTimeout(() => {
+    // Render the calendar
+    renderInitialCalendar();
+    // render the visible sources
+    mapVisibleSourcesToFullCalendar(propOr([], 'sources', state));
+  }, 0);
+}
 
 /**
  * This Reducer is for the Calendar and any actions that stem from its views.
@@ -39,14 +51,12 @@ export default (state = {}, action) => {
         openCalendarDrawer: false
       })
 
+      renderCalenderIO(state);
+      return state;
+
     case 'NAVIGATE':
       if (action.value === "index" || state.router.route === "index") {
-        setTimeout(() => {
-          // Render the calendar
-          renderInitialCalendar();
-          // render the visible sources
-          mapVisibleSourcesToFullCalendar(propOr([], 'sources', state));
-        }, 0);
+        renderCalenderIO(state);
       }
       return state;
 

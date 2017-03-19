@@ -49,4 +49,8 @@ const mainReducer = (state = defaultState, action) => {
  *
  * Import your custom reducer at the top of file and add it as an argument here
  */
-export default combineReducers(mainReducer, exampleReducers, roomReducers, formReducers, routerReducers,calendarReducers, firebaseReducers);
+export default combineReducers(
+  mainReducer, exampleReducers, roomReducers,
+  formReducers,calendarReducers, firebaseReducers,
+  routerReducers
+);

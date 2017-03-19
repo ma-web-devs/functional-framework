@@ -45,7 +45,20 @@ export default (state = {}, action) => {
   switch (action.type) {
 
     case '@@INIT':
-      return Object.assign({}, state, {balance: 0})
+      return Object.assign({}, state, {
+        example: {
+          balance: 0,
+          form: {
+            amount: {
+              value: 0,
+              type: 'number'
+            }
+          }}
+      })
+
+    case 'EX_CHANGE_AMOUNT':
+      const update = updateAt('example', 'form', 'amount', 'value')
+      return update(action.value, state)
 
     case 'DEPOSIT':
       return depositMoneyAction(state, action)
