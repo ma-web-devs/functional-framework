@@ -1,6 +1,6 @@
 "use strict"
 import dom from '../../utils/dom'
-import CalendarInnerDrawer from 'CalendarInnerDrawer'
+import CalendarInnerDrawer from './CalendarInnerDrawer'
 import {propOr, gt} from 'ramda';
 
 

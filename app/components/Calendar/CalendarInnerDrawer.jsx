@@ -1,6 +1,6 @@
 "use strict"
 import dom from '../../utils/dom'
-import ToggleCalendar from 'ToggleCalendars'
+import ToggleCalendar from './ToggleCalendars'
 
 
 /**

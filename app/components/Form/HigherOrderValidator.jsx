@@ -3,7 +3,7 @@ import dom from '../../utils/dom'
 
 
 /**
- * HigherOrderInputValidator (higher-order component)
+ * HigherOrderValidator (higher-order component)
  *
  * Wrap an input to get new input component with built-in
  * validation
@@ -13,13 +13,13 @@ import dom from '../../utils/dom'
  * @returns {Function}
  * @constructor
  */
-const HigherOrderInputValidator = (InputField, validationFn) => {
+const HigherOrderValidator = (InputField, validationFn, propName='value') => {
 
   let validationClassName = ''
 
   return function(props, children) {
 
-    const valid = validationFn(props.value)
+    const valid = validationFn(props[propName])
 
     return (
       <div className={validationClassName}>
@@ -35,4 +35,4 @@ const HigherOrderInputValidator = (InputField, validationFn) => {
 }
 
 
-export default HigherOrderInputValidator
+export default HigherOrderValidator

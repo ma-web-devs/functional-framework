@@ -96,6 +96,17 @@ export function createStore(reducer, state, reduxDevTools) {
       nextSubscribers = currentSubscribers.slice(0)
     } finally {
       isDispatching = false
+
+      /**
+       * If there is a parent then send action to parent. (for embedding app)
+       */
+      const parent = window ? window.parent ? window.parent : window : null;
+      if (parent) {
+        parent.postMessage(
+          action,
+          parent.location ? parent.location.origin : ''
+        )
+      }
     }
   }
 

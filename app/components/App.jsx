@@ -8,6 +8,7 @@ import Room from './Admin/Room/Room'
 import FormGroupComponent from './Admin/FormGroup/FormGroupComponent'
 import FormDetailComponent from './Admin/FormDetail/FormDetailComponent'
 import FormDetailList from './Admin/FormDetail/FormDetailList'
+import DemocracyCenterButtons from './DemocracyCenterButtons';
 
 import Navigation from './Navigation'
 import {Route, Link} from './Router'
@@ -21,7 +22,7 @@ import {Route, Link} from './Router'
 const AppComponent = (props) => {
 
   return (
-    <div className="container">
+    <div className="container-fluid">
 
       {/*  Navigation  */}
       <Navigation {...props}>
@@ -34,17 +35,22 @@ const AppComponent = (props) => {
       </Navigation>
 
 
+      <section className="row">
+        <DemocracyCenterButtons {...props}/>
+      </section>
 
       <section className="row">
-        {/*  Calendar route="calendar" */}
-        <Route route="index" {...props} Component={Calendar}/>
-        {/* Example route="example" */}
-        <Route route="example" {...props} Component={Example}/>
-        {/*  Admin route="room" */}
-        <Route route="room" {...props} Component={Room}/>
-        <Route route="form-group-component" {...props} Component={FormGroupComponent}/>
-        <Route route="form-detail-component" {...props} Component={FormDetailComponent}/>
-        <Route route="form-detail-list" {...props} Component={FormDetailList}/>
+        <div className="col-sm-12 col-md-12 col-lg-10 col-lg-push-1">
+          {/*  Calendar route="calendar" */}
+          <Route route="index" {...props} Component={Calendar}/>
+          {/* Example route="example" */}
+          <Route route="example" {...props} Component={Example}/>
+          {/*  Admin route="room" */}
+          <Route route="room" {...props} Component={Room}/>
+          <Route route="form-group-component" {...props} Component={FormGroupComponent}/>
+          <Route route="form-detail-component" {...props} Component={FormDetailComponent}/>
+          <Route route="form-detail-list" {...props} Component={FormDetailList}/>
+        </div>
       </section>
 
       {/* Footer */}

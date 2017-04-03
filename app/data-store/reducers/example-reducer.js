@@ -51,7 +51,10 @@ export default (state = {}, action) => {
           form: {
             amount: {
               value: 0,
-              type: 'number'
+              type: 'number',
+              validator(val) {
+                return val % 2 === 0;
+              }
             }
           }}
       })

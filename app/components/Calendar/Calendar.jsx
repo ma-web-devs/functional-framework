@@ -1,6 +1,6 @@
 "use strict"
 import dom from '../../utils/dom'
-import CalendarDrawer from 'CalendarDrawer'
+import CalendarDrawer from './CalendarDrawer'
 
 /**
  * Calendar Component

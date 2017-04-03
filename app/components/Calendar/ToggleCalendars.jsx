@@ -34,7 +34,7 @@ const ToggleCheckboxJSX = curry(
     const onClassName = `btn btn-sm btn-${source.visible ? 'success active' : 'default'}`
 
     return (
-      <span>
+      <div className="col-xs-6 col-sm-4 toggle-btn">
           <div className="btn-group" tabindex="0"
                onclick={() => dispatch({type: 'TOGGLE_ROOM', value: source})}>
             <a className={offClassName}>
@@ -45,7 +45,7 @@ const ToggleCheckboxJSX = curry(
             </a>
           </div>
           <strong className="checkboxText">{propOr('', 'title', source)}</strong>
-      </span>
+      </div>
     )
   })
 
@@ -65,7 +65,7 @@ const ShowAllSourcesButton = (dispatch, showButton = false) => {
 
   return showButton ? (
       <span onclick={() => dispatch({type: 'SHOW_ALL_SOURCES'})}
-            className="btn btn-sm btn-info">
+            className="btn btn-sm btn-success">
         Show All Events
       </span>
     ) : null
@@ -88,12 +88,13 @@ export default ({state: {sources = []}, dispatch}) => {
         <div className="form form-inline">
           <div className="toggle-wrapper">
 
-            <div className="form-group-sm">
-              {/* Render Checkboxes for Toggle Switches */}
-              {map(ToggleCheckboxJSX(dispatch), sources)}
-
-              {/* Render the "show all" sources button */}
-              {ShowAllSourcesButton(dispatch, displayShowAll)}
+            <div className="row">
+              <div className="form-group form-group-sm">
+                {/* Render Checkboxes for Toggle Switches */}
+                {map(ToggleCheckboxJSX(dispatch), sources)}
+                {/* Render the "show all" sources button */}
+                {ShowAllSourcesButton(dispatch, displayShowAll)}
+              </div>
             </div>
 
           </div>

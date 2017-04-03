@@ -2,11 +2,11 @@
 import './styles/main.scss'
 
 import App from './components/App'
-import dom, {renderDOM} from 'utils/dom'
+import dom, {renderDOM} from './utils/dom'
 import {createStore} from './data-store/index'
 import {database, auth} from './utils/firebase-app'
-import reducers, {defaultState} from 'data-store/reducers'
-import {setupRouterPopstate} from 'data-store/reducers/router-reducer'
+import reducers, {defaultState} from './data-store/reducers'
+import {setupRouterPopstate} from './data-store/reducers/router-reducer'
 import awesome from './utils/helpers'
 
 
@@ -27,7 +27,11 @@ const {subscribe, dispatch, dispatchAsync, getState} = createStore(
  * @type {function}
  */
 const updateView = renderDOM(
-  (state) => <App state={state} dispatch={dispatch} />, document.getElementById('app'), getState()
+  (state) => {
+    return <App state={state} dispatch={dispatch}/>
+  }
+  , document.getElementById('app')
+  , getState()
 )
 
 

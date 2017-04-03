@@ -6,6 +6,7 @@ build/bower_components/
 .idea
 build/*
 !build/index.html
+!build/demo
 !build/favicon.ico
 !build/widget.html
 !build/style.css

@@ -1,3 +1,4 @@
+
 $background: #fafdfa;
 $fontColor: #383838;
 
@@ -7,6 +8,9 @@ body {
   color: $fontColor;
   padding-top: 70px;
 
+  .toggle-btn {
+    margin-bottom: 0.5rem;
+  }
   .navbar {
     &.navbar-inverse {
       .navbar-nav > li > a.active {
@@ -120,12 +124,3 @@ Styles for Check Boxes
 #toggle-all {
   margin-top: 7px;
 }
-
-//#toggle-all:checked {
-//  visibility: hidden;
-//}
-//
-//#toggle-all:checked ~ span {
-//  visibility: hidden;
-//}
-
