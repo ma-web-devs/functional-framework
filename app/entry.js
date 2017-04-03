@@ -1,2 +1,1 @@
 import bookingApp from './index'
-

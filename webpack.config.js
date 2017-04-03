@@ -12,7 +12,7 @@ const BUILD_DIR   = resolve(__dirname, 'build'),
       ASSETS_DIR  = '/assets',
       OUTPUT_FILE = 'bundle.js',
       ENTRY_FILE  = resolve(APP_DIR, 'entry.js'),
-      HOST_NAME   = 'localhost', // <-- will be on local network
+      HOST_NAME   = '0.0.0.0', // <-- will be on local network
       PORT        = 5000;
 
 module.exports = {

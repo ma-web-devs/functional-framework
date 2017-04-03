@@ -5,6 +5,8 @@ import {
 } from '../../utils/calendar-utils';
 import R, {
   propOr,
+  prop,
+  path,
   map,
   set,
   lensProp
@@ -55,7 +57,7 @@ export default (state = {}, action) => {
       return state;
 
     case 'NAVIGATE':
-      if (action.value === "index" || state.router.route === "index") {
+      if (prop('value', action) === "index" || path(['router', 'route'], state) === "index") {
         renderCalenderIO(state);
       }
       return state;

@@ -16,30 +16,6 @@
   <script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
 
   <script src="https://apis.google.com/js/api.js"></script>
-  <script>
-    const CLIENT_ID  = '895512080708-nsu25s3qth29utoqtkb51hps5aoq0c75.apps.googleusercontent.com'
-    const API_KEY    = 'AIzaSyBF391zC2S8su_r_-zFARAoWo1ekRsgcZE'
-    var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
-
-    var calId = 't0gnqindnl5hfu7noj4iu3dvek@group.calendar.google.com'
-    window.gapiPromise = new Promise(function (resolve, reject) {
-      function start() {
-        // 2. Initialize the JavaScript client library.
-        gapi.client.init({
-          'apiKey': API_KEY,
-          'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-          // clientId and scope are optional if auth is not required.
-          'clientId': CLIENT_ID,
-          'scope': SCOPES
-        })
-          .then(resolve, reject);
-
-      };
-
-      // 1. Load the JavaScript client library.
-      gapi.load('client', start);
-    })
-  </script>
 
   <script>
     window._CONFIG = window._CONFIG || {}
